@@ -66,6 +66,28 @@ title: "About"
 </div>
 
 <div class="content-section">
+  <h2 class="section-title">Announcements</h2>
+  {% if site.data.announcements and site.data.announcements.size > 0 %}
+  <table class="news-table" id="news-table">
+    {% for item in site.data.announcements limit:10 %}
+    <tr>
+      <td class="news-date">
+        <time data-date="{{ item.date | date_to_xmlschema }}">{{ item.date | date: "%b %-d, %Y" }}</time>
+      </td>
+      <td class="news-content">{{ item.content }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  <p class="news-empty" id="news-empty" style="display:none">No recent updates.</p>
+  <button class="news-more-btn" id="news-more-btn" style="display:none" type="button">
+    show more <i class="fas fa-chevron-down fa-xs"></i>
+  </button>
+  {% else %}
+  <p class="news-empty">No recent updates.</p>
+  {% endif %}
+</div>
+
+<div class="content-section">
   <div class="section-header">
     <h2 class="section-title" style="border:none;padding:0;margin:0">Research</h2>
     <a href="{{ '/research' | relative_url }}">see more &rarr;</a>
@@ -124,10 +146,11 @@ title: "About"
 
 <script>
 (function () {
+  /* ── shared utilities ── */
   function timeAgo(isoStr) {
-    var played = new Date(isoStr);
-    var now    = new Date();
-    var secs   = Math.floor((now - played) / 1000);
+    var d    = new Date(isoStr);
+    var now  = new Date();
+    var secs = Math.floor((now - d) / 1000);
     if (secs < 60)  return secs + ' second' + (secs === 1 ? '' : 's') + ' ago';
     var mins = Math.floor(secs / 60);
     if (mins < 60)  return mins + ' minute' + (mins === 1 ? '' : 's') + ' ago';
@@ -137,33 +160,84 @@ title: "About"
     return days + ' day' + (days === 1 ? '' : 's') + ' ago';
   }
 
-  var el = document.getElementById('spotify-now-playing');
-  if (!el) return;
-
-  fetch('{{ "/assets/data/now-playing.json" | relative_url }}?t=' + Date.now())
-    .then(function (r) { return r.json(); })
-    .then(function (data) {
-      if (!data.track) {
-        el.textContent = 'No recent tracks.';
-        return;
-      }
-      var t = data.track;
-      var artistLinks = t.artists.map(function (a) {
-        return '<a href="' + a.url + '" target="_blank" rel="noopener noreferrer">' +
-               escapeHtml(a.name) + '</a>';
-      }).join(', ');
-      el.innerHTML =
-        'listened to <a href="' + t.url + '" target="_blank" rel="noopener noreferrer">' +
-        escapeHtml(t.name) + '</a> by ' + artistLinks +
-        ' <span class="spotify-time">(' + timeAgo(t.played_at) + ')</span>';
-    })
-    .catch(function () {
-      el.textContent = 'Could not load recent track.';
-    });
-
   function escapeHtml(str) {
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
               .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
+  /* ── announcement timestamps ── */
+  document.querySelectorAll('time[data-date]').forEach(function (el) {
+    el.textContent = timeAgo(el.getAttribute('data-date'));
+  });
+
+  /* ── announcement visibility: hide entries older than 30 days ── */
+  var THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
+  var nowMs       = Date.now();
+  var tableEl     = document.getElementById('news-table');
+  var emptyEl     = document.getElementById('news-empty');
+  var moreBtn     = document.getElementById('news-more-btn');
+
+  if (tableEl) {
+    var rows    = Array.prototype.slice.call(tableEl.querySelectorAll('tr'));
+    var oldRows = rows.filter(function (row) {
+      var t = row.querySelector('time[data-date]');
+      return t && (nowMs - new Date(t.getAttribute('data-date')).getTime()) > THIRTY_DAYS_MS;
+    });
+
+    oldRows.forEach(function (r) { r.classList.add('news-row-old'); });
+
+    var recentCount = rows.length - oldRows.length;
+
+    /* Nothing recent — hide the table, reveal the empty-state message */
+    if (recentCount === 0 && emptyEl) {
+      tableEl.style.display = 'none';
+      emptyEl.style.display = 'block';
+    }
+
+    /* There are older entries to toggle */
+    if (oldRows.length > 0 && moreBtn) {
+      moreBtn.style.display = 'inline-flex';
+      var expanded = false;
+
+      moreBtn.addEventListener('click', function () {
+        expanded = !expanded;
+
+        /* Show / re-hide older rows */
+        oldRows.forEach(function (r) {
+          r.classList.toggle('news-row-old', !expanded);
+        });
+
+        /* If every row was old, also toggle the table / empty-state text */
+        if (recentCount === 0) {
+          tableEl.style.display = expanded ? '' : 'none';
+          if (emptyEl) emptyEl.style.display = expanded ? 'none' : 'block';
+        }
+
+        moreBtn.innerHTML = expanded
+          ? 'show less <i class="fas fa-chevron-up fa-xs"></i>'
+          : 'show more <i class="fas fa-chevron-down fa-xs"></i>';
+      });
+    }
+  }
+
+  /* ── Spotify "recently listened" ── */
+  var spotifyEl = document.getElementById('spotify-now-playing');
+  if (spotifyEl) {
+    fetch('{{ "/assets/data/now-playing.json" | relative_url }}?t=' + Date.now())
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (!data.track) { spotifyEl.textContent = 'No recent tracks.'; return; }
+        var t = data.track;
+        var artistLinks = t.artists.map(function (a) {
+          return '<a href="' + a.url + '" target="_blank" rel="noopener noreferrer">' +
+                 escapeHtml(a.name) + '</a>';
+        }).join(', ');
+        spotifyEl.innerHTML =
+          'listened to <a href="' + t.url + '" target="_blank" rel="noopener noreferrer">' +
+          escapeHtml(t.name) + '</a> by ' + artistLinks +
+          ' <span class="spotify-time">(' + timeAgo(t.played_at) + ')</span>';
+      })
+      .catch(function () { spotifyEl.textContent = 'Could not load recent track.'; });
   }
 })();
 </script>

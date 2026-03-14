@@ -803,3 +803,88 @@ main {
 .spotify-time {
   color: var(--color-text-muted);
 }
+
+/* ===========================
+   Announcements / News Table (al-folio style)
+   =========================== */
+.news-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.news-table tr {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.news-table tr:last-child {
+  border-bottom: none;
+}
+
+.news-date {
+  width: 9rem;
+  padding: 0.75rem 1.25rem 0.75rem 0;
+  vertical-align: top;
+  font-size: 0.825rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.news-content {
+  padding: 0.75rem 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  vertical-align: top;
+}
+
+.news-content strong {
+  font-weight: 600;
+}
+
+@media (max-width: 680px) {
+  .news-table,
+  .news-table tbody,
+  .news-table tr,
+  .news-date,
+  .news-content {
+    display: block;
+  }
+
+  .news-date {
+    padding: 0.75rem 0 0.15rem;
+    width: auto;
+  }
+
+  .news-content {
+    padding: 0 0 0.75rem;
+  }
+}
+
+/* ── announcement visibility ── */
+.news-row-old {
+  display: none;
+}
+
+.news-empty {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  font-style: italic;
+  padding: 0.25rem 0;
+  margin: 0;
+}
+
+.news-more-btn {
+  margin-top: 0.6rem;
+  background: none;
+  border: none;
+  color: var(--color-accent);
+  font-size: 0.875rem;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  padding: 0;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.news-more-btn:hover {
+  text-decoration: underline;
+}
