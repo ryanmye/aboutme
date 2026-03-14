@@ -11,24 +11,24 @@
    Custom Properties
    =========================== */
 :root {
-  --color-bg:         #ffffff;
-  --color-surface:    #f8f9fa;
-  --color-border:     #e9ecef;
-  --color-text:       #212529;
-  --color-text-muted: #6c757d;
-  --color-accent:     #2563eb;
-  --color-accent-hover: #1d4ed8;
-  --color-tag-bg:     #dbeafe;
-  --color-tag-text:   #1e40af;
+  --color-bg:           #ffffff;
+  --color-surface:      #f8f9fa;
+  --color-border:       #dee2e6;
+  --color-text:         #212529;
+  --color-text-muted:   #6c757d;
+  --color-accent:       #0077b6;
+  --color-accent-hover: #005f8e;
+  --color-tag-bg:       #e3f2fd;
+  --color-tag-text:     #0056a3;
 
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
 
-  --max-width: 800px;
-  --nav-height: 60px;
+  --max-width: 900px;
+  --nav-height: 56px;
 
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
-  --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.05);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
   --radius: 8px;
 }
 
@@ -53,11 +53,12 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   margin-top: 1.8rem;
   margin-bottom: 0.75rem;
+  color: var(--color-text);
 }
 
-h1 { font-size: 2rem; }
-h2 { font-size: 1.5rem; }
-h3 { font-size: 1.2rem; }
+h1 { font-size: 1.9rem; }
+h2 { font-size: 1.4rem; }
+h3 { font-size: 1.15rem; }
 
 p { margin-bottom: 1rem; }
 
@@ -105,17 +106,17 @@ hr {
 
 main {
   flex: 1;
-  padding: 3rem 0;
+  padding: 0 0 3rem;
 }
 
 /* ===========================
-   Navigation
+   Navigation (al-folio tab style)
    =========================== */
 .site-nav {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.97);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--color-border);
@@ -134,32 +135,45 @@ main {
   font-size: 1.1rem;
   color: var(--color-text);
   text-decoration: none;
+  letter-spacing: -0.01em;
 }
 
-.nav-brand:hover { text-decoration: none; color: var(--color-accent); }
+.nav-brand:hover {
+  text-decoration: none;
+  color: var(--color-accent);
+}
 
 .nav-links {
   display: flex;
-  gap: 0.25rem;
+  gap: 0;
   list-style: none;
   padding: 0;
   margin: 0;
+  height: 100%;
+}
+
+.nav-links li {
+  display: flex;
+  align-items: stretch;
+  margin-bottom: 0;
 }
 
 .nav-links a {
-  display: inline-block;
-  padding: 0.4rem 0.75rem;
-  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  padding: 0 0.85rem;
   color: var(--color-text-muted);
   font-size: 0.9rem;
   font-weight: 500;
-  transition: color 0.15s, background 0.15s;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  text-decoration: none;
 }
 
 .nav-links a:hover,
 .nav-links a.active {
-  color: var(--color-accent);
-  background: var(--color-tag-bg);
+  color: var(--color-text);
+  border-bottom-color: var(--color-accent);
   text-decoration: none;
 }
 
@@ -189,7 +203,7 @@ main {
 .site-footer {
   background: var(--color-surface);
   border-top: 1px solid var(--color-border);
-  padding: 2rem 0;
+  padding: 1.5rem 0;
   margin-top: auto;
 }
 
@@ -198,12 +212,12 @@ main {
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .footer-copy {
   color: var(--color-text-muted);
-  font-size: 0.875rem;
+  font-size: 0.83rem;
 }
 
 .footer-links {
@@ -213,7 +227,7 @@ main {
 
 .footer-links a {
   color: var(--color-text-muted);
-  font-size: 0.875rem;
+  font-size: 0.83rem;
   transition: color 0.15s;
 }
 
@@ -223,87 +237,142 @@ main {
 }
 
 /* ===========================
-   Hero / Homepage
+   Profile Section (al-folio style)
    =========================== */
-.hero {
+.profile-section {
+  display: flex;
+  gap: 3rem;
+  align-items: flex-start;
   padding: 3rem 0 2.5rem;
 }
 
-.hero-greeting {
-  font-size: 1rem;
-  color: var(--color-text-muted);
-  font-weight: 500;
-  margin-bottom: 0.5rem;
+.profile-left {
+  flex: 0 0 190px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
-.hero-name {
-  font-size: 2.8rem;
+/* CSS avatar (initials) — shown when no profile photo */
+.profile-avatar {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-hover) 100%);
+  color: #fff;
+  font-size: 3rem;
   font-weight: 700;
-  margin: 0 0 0.5rem;
-  line-height: 1.15;
-}
-
-.hero-title {
-  font-size: 1.15rem;
-  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 1.25rem;
+  border: 3px solid var(--color-border);
+  overflow: hidden;
 }
 
-.hero-bio {
-  font-size: 1.05rem;
-  max-width: 580px;
-  margin-bottom: 1.75rem;
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
-.hero-links {
+.profile-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 0.35rem;
+  line-height: 1.3;
+}
+
+.profile-position {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin: 0 0 1.1rem;
+  line-height: 1.5;
+}
+
+.profile-social {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.profile-social a {
+  color: var(--color-text-muted);
+  font-size: 1.3rem;
+  transition: color 0.15s;
+  text-decoration: none;
+}
+
+.profile-social a:hover {
+  color: var(--color-accent);
+}
+
+.profile-right {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-right p {
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.profile-contact-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 1rem;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
 }
 
-.btn {
+.profile-contact-row span {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.55rem 1.15rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: all 0.15s;
-  text-decoration: none;
 }
 
-.btn-primary {
-  background: var(--color-accent);
-  color: #fff;
+.profile-contact-row a {
+  color: var(--color-text-muted);
 }
 
-.btn-primary:hover {
-  background: var(--color-accent-hover);
-  text-decoration: none;
-  color: #fff;
-}
-
-.btn-outline {
-  background: transparent;
+.profile-contact-row a:hover {
   color: var(--color-accent);
-  border: 1.5px solid var(--color-accent);
-}
-
-.btn-outline:hover {
-  background: var(--color-tag-bg);
-  text-decoration: none;
 }
 
 /* ===========================
-   Section Headers
+   Content / Page Sections
+   =========================== */
+.content-section {
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.content-section:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.section-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0 0 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* ===========================
+   Section Headers (blog/page headings)
    =========================== */
 .section-header {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  margin-bottom: 1.5rem;
-  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .section-header h2 {
@@ -316,13 +385,32 @@ main {
 }
 
 /* ===========================
-   Cards
+   Page Header (inner pages)
+   =========================== */
+.page-header {
+  padding: 2.5rem 0 2rem;
+  margin-bottom: 0;
+}
+
+.page-header h1 {
+  margin: 0 0 0.3rem;
+  font-size: 2rem;
+}
+
+.page-header .subtitle {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* ===========================
+   Cards (Projects)
    =========================== */
 .card {
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  padding: 1.5rem;
+  padding: 1.4rem;
   box-shadow: var(--shadow-sm);
   transition: box-shadow 0.2s, transform 0.2s;
 }
@@ -334,7 +422,7 @@ main {
 
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 1.25rem;
 }
 
@@ -348,7 +436,7 @@ main {
 .card-title a:hover { color: var(--color-accent); text-decoration: none; }
 
 .card-meta {
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: var(--color-text-muted);
   margin-bottom: 0.5rem;
 }
@@ -385,9 +473,9 @@ main {
   display: inline-block;
   background: var(--color-tag-bg);
   color: var(--color-tag-text);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 500;
-  padding: 0.2rem 0.6rem;
+  padding: 0.2rem 0.55rem;
   border-radius: 20px;
 }
 
@@ -401,15 +489,15 @@ main {
 }
 
 .post-item {
+  padding: 1.25rem 0;
   border-bottom: 1px solid var(--color-border);
-  padding: 1.4rem 0;
 }
 
 .post-item:first-child { padding-top: 0; }
 .post-item:last-child { border-bottom: none; }
 
 .post-item-title {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   margin: 0 0 0.3rem;
 }
@@ -420,11 +508,11 @@ main {
 .post-item-meta {
   font-size: 0.82rem;
   color: var(--color-text-muted);
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.35rem;
 }
 
 .post-item-excerpt {
-  font-size: 0.93rem;
+  font-size: 0.92rem;
   color: var(--color-text-muted);
 }
 
@@ -507,26 +595,32 @@ main {
 .post-nav a:hover { color: var(--color-accent); }
 
 /* ===========================
-   About / Content Pages
+   Research / Publications
    =========================== */
-.page-header {
-  margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
+.research-entry {
+  padding: 1.5rem 0;
   border-bottom: 1px solid var(--color-border);
 }
 
-.page-header h1 {
+.research-entry:last-child { border-bottom: none; }
+
+.research-entry h3 {
   margin-top: 0;
-  margin-bottom: 0.5rem;
-}
-
-.page-header .subtitle {
-  color: var(--color-text-muted);
+  margin-bottom: 0.35rem;
   font-size: 1.05rem;
-  margin: 0;
 }
 
-/* Research publications */
+.research-entry .research-meta {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.6rem;
+}
+
+.research-entry .research-role {
+  font-weight: 600;
+  font-style: italic;
+}
+
 .publication {
   padding: 1.25rem 0;
   border-bottom: 1px solid var(--color-border);
@@ -552,20 +646,21 @@ main {
 }
 
 /* ===========================
-   Resume Page
+   CV / Resume Page
    =========================== */
 .resume-section {
-  margin-bottom: 2rem;
+  margin-bottom: 2.25rem;
 }
 
 .resume-section h2 {
-  font-size: 1.1rem;
+  font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--color-text-muted);
   border-bottom: 1px solid var(--color-border);
   padding-bottom: 0.5rem;
   margin-bottom: 1rem;
+  margin-top: 0;
 }
 
 .resume-item {
@@ -596,12 +691,49 @@ main {
 }
 
 /* ===========================
+   Skills list (inline tags)
+   =========================== */
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.skills-list li {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.875rem;
+  margin-bottom: 0;
+}
+
+/* ===========================
    Responsive
    =========================== */
-@media (max-width: 640px) {
-  h1 { font-size: 1.6rem; }
+@media (max-width: 680px) {
+  h1 { font-size: 1.5rem; }
 
-  .hero-name { font-size: 2rem; }
+  .profile-section {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2rem 0 1.5rem;
+  }
+
+  .profile-left {
+    flex: none;
+    width: 100%;
+  }
+
+  .profile-avatar {
+    width: 130px;
+    height: 130px;
+    font-size: 2.5rem;
+  }
 
   .nav-links {
     display: none;
@@ -613,8 +745,19 @@ main {
     background: #fff;
     border-bottom: 1px solid var(--color-border);
     padding: 0.75rem 1.5rem;
-    gap: 0.25rem;
+    gap: 0;
     box-shadow: var(--shadow-md);
+  }
+
+  .nav-links li {
+    align-items: center;
+  }
+
+  .nav-links a {
+    padding: 0.6rem 0;
+    border-bottom: none;
+    width: 100%;
+    border-bottom: 1px solid transparent;
   }
 
   .nav-links.open { display: flex; }
@@ -628,4 +771,120 @@ main {
   .post-nav { flex-direction: column; }
 
   .resume-item-header { flex-direction: column; }
+
+  .profile-contact-row { flex-direction: column; gap: 0.5rem; }
+}
+
+/* ===========================
+   Spotify Widget
+   =========================== */
+.spotify-widget {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.spotify-widget .fab.fa-spotify {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.spotify-widget a {
+  color: var(--color-text-muted);
+}
+
+.spotify-widget a:hover {
+  color: #1DB954;
+}
+
+.spotify-time {
+  color: var(--color-text-muted);
+}
+
+/* ===========================
+   Announcements / News Table (al-folio style)
+   =========================== */
+.news-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.news-table tr {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.news-table tr:last-child {
+  border-bottom: none;
+}
+
+.news-date {
+  width: 9rem;
+  padding: 0.75rem 1.25rem 0.75rem 0;
+  vertical-align: top;
+  font-size: 0.825rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.news-content {
+  padding: 0.75rem 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  vertical-align: top;
+}
+
+.news-content strong {
+  font-weight: 600;
+}
+
+@media (max-width: 680px) {
+  .news-table,
+  .news-table tbody,
+  .news-table tr,
+  .news-date,
+  .news-content {
+    display: block;
+  }
+
+  .news-date {
+    padding: 0.75rem 0 0.15rem;
+    width: auto;
+  }
+
+  .news-content {
+    padding: 0 0 0.75rem;
+  }
+}
+
+/* ── announcement visibility ── */
+.news-row-old {
+  display: none;
+}
+
+.news-empty {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  font-style: italic;
+  padding: 0.25rem 0;
+  margin: 0;
+}
+
+.news-more-btn {
+  margin-top: 0.6rem;
+  background: none;
+  border: none;
+  color: var(--color-accent);
+  font-size: 0.875rem;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  padding: 0;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.news-more-btn:hover {
+  text-decoration: underline;
 }

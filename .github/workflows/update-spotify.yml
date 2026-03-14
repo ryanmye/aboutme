@@ -1,0 +1,91 @@
+name: Update Spotify Now Playing
+
+on:
+  schedule:
+    # Run every 30 minutes
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+jobs:
+  update-spotify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch recently played track
+        env:
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          SPOTIFY_REFRESH_TOKEN: ${{ secrets.SPOTIFY_REFRESH_TOKEN }}
+        run: |
+          python3 << 'PYEOF'
+          import os, json, base64, urllib.request, urllib.parse, time, sys
+
+          client_id     = os.environ.get('SPOTIFY_CLIENT_ID', '')
+          client_secret = os.environ.get('SPOTIFY_CLIENT_SECRET', '')
+          refresh_token = os.environ.get('SPOTIFY_REFRESH_TOKEN', '')
+
+          if not (client_id and client_secret and refresh_token):
+              print("Spotify credentials not configured — skipping.", file=sys.stderr)
+              sys.exit(0)
+
+          # Exchange refresh token for access token
+          credentials = base64.b64encode(f"{client_id}:{client_secret}".encode()).decode()
+          token_body = urllib.parse.urlencode({
+              'grant_type':    'refresh_token',
+              'refresh_token': refresh_token,
+          }).encode()
+          token_req = urllib.request.Request(
+              'https://accounts.spotify.com/api/token',
+              data=token_body,
+              headers={
+                  'Authorization':  f'Basic {credentials}',
+                  'Content-Type':   'application/x-www-form-urlencoded',
+              },
+          )
+          with urllib.request.urlopen(token_req) as resp:
+              access_token = json.loads(resp.read())['access_token']
+
+          # Fetch most recently played track
+          recent_req = urllib.request.Request(
+              'https://api.spotify.com/v1/me/player/recently-played?limit=1',
+              headers={'Authorization': f'Bearer {access_token}'},
+          )
+          with urllib.request.urlopen(recent_req) as resp:
+              data = json.loads(resp.read())
+
+          if not data.get('items'):
+              result = {'track': None, 'fetched_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}
+          else:
+              item  = data['items'][0]
+              track = item['track']
+              result = {
+                  'track': {
+                      'name':      track['name'],
+                      'url':       track['external_urls']['spotify'],
+                      'artists':   [
+                          {'name': a['name'], 'url': a['external_urls']['spotify']}
+                          for a in track['artists']
+                      ],
+                      'played_at': item['played_at'],
+                  },
+                  'fetched_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+              }
+
+          os.makedirs('assets/data', exist_ok=True)
+          with open('assets/data/now-playing.json', 'w') as f:
+              json.dump(result, f, indent=2)
+
+          print("Spotify data written to assets/data/now-playing.json")
+          PYEOF
+
+      - name: Commit updated data
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add assets/data/now-playing.json
+          git diff --staged --quiet || git commit -m "chore: update Spotify now-playing data [skip ci]"
+          git push

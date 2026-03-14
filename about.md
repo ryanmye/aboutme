@@ -5,44 +5,52 @@ permalink: /about/
 ---
 
 <div class="page-header">
-  <h1>About Me</h1>
-  <p class="subtitle">Computer Science Student &amp; Researcher</p>
+  <h1>About</h1>
+  <p class="subtitle">Computer Science student at Cornell University.</p>
 </div>
 
-## Biography
-
-Hi! I'm Ryan Mye, a computer science student with a deep interest in software
-engineering, algorithms, and applied research. I enjoy tackling complex problems,
-learning new technologies, and contributing to open-source projects.
-
-Outside of academics, I like hiking, reading, and experimenting with side projects
-that blend creativity with technical challenge.
+I am an undergraduate studying Computer Science at Cornell University (College of
+Engineering). My interests lie broadly in machine learning, computer vision, and AI
+for scientific discovery.
 
 ## Interests
 
-- **Software Engineering** — building reliable, well-designed software systems
-- **Algorithms & Complexity** — theoretical foundations and practical applications
-- **Machine Learning** — deep learning, NLP, and responsible AI
-- **Open-Source Development** — contributing to and building open-source tools
-- **Technical Writing** — explaining ideas clearly through blog posts and documentation
+- **Machine learning and computer vision** — deep learning for perception and recognition
+- **AI for science and real-world systems** — using ML to accelerate research domains
+- **Representation learning and foundation models** — self-supervised and pretrained models
+- **Data-efficient learning methods** — few-shot and weakly supervised approaches
 
-## Academic Background
+I enjoy collaborating across disciplines and working with researchers in domains like
+veterinary science, agriculture, and economics to design AI systems that help analyze
+complex real-world data.
 
-**B.S. Computer Science** *(In Progress)*
-University Name, Expected Graduation: 2027
+Outside of academics, I am a violinist in the Cornell Orchestras and enjoy exploring how
+technology and creativity intersect.
+
+## Education
+
+**Cornell University** — B.S. in Computer Science (College of Engineering)
+*Expected May 2028* | GPA: 4.05
 
 Relevant coursework:
-- Data Structures & Algorithms
-- Operating Systems
-- Computer Networks
+- Algorithms
 - Machine Learning
-- Software Engineering
-- Theory of Computation
+- Data Structures
+- Functional Programming (OCaml)
+- Linear Algebra, Differential Equations, Multivariable Calculus
+- iOS Development
 
 ## Skills
 
-**Languages:** Python, Java, C/C++, JavaScript, TypeScript, SQL, Bash
+**Programming:** Python, Java, C++, OCaml, JavaScript, HTML/CSS
 
-**Frameworks & Tools:** React, Node.js, Flask, PyTorch, Git, Docker, Linux
+**Machine Learning:** PyTorch, Hugging Face Transformers, NumPy, pandas, Matplotlib
 
-**Concepts:** REST APIs, CI/CD, Agile, OOP, Functional Programming, System Design
+**Tools:** Git, VS Code, Jupyter Notebook, IntelliJ, PyCharm, SSH
+
+## Contact
+
+- **Email:** [rmy43@cornell.edu](mailto:rmy43@cornell.edu)
+- **LinkedIn:** [linkedin.com/in/rmy43](https://www.linkedin.com/in/rmy43/)
+- **GitHub:** [github.com/matthewj5](https://github.com/matthewj5)
+

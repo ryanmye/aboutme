@@ -1,7 +1,7 @@
 ---
 layout: default
-title: "Resume"
-permalink: /resume/
+title: "CV"
+permalink: /cv/
 ---
 
 <div class="page-header">
@@ -113,4 +113,3 @@ permalink: /resume/
     </ul>
   </div>
 </div>
-

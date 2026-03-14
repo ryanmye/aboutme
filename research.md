@@ -6,65 +6,73 @@ permalink: /research/
 
 <div class="page-header">
   <h1>Research</h1>
-  <p class="subtitle">Publications, projects, and academic work.</p>
+  <p class="subtitle">Computer vision, machine learning, and AI for scientific discovery.</p>
 </div>
 
-## Research Interests
+## Research Position
 
-My research sits at the intersection of **machine learning**, **natural language
-processing**, and **software engineering**. I'm particularly interested in:
-
-- Large language models and their reliability
-- Program synthesis and automated code generation
-- Efficient inference for resource-constrained environments
-- Responsible and interpretable AI systems
+<div class="research-entry">
+  <h3>AI for Animal Behavior Monitoring</h3>
+  <p class="research-meta">
+    <span class="research-role">Undergraduate Researcher</span> &mdash; Sun Lab, Cornell University
+  </p>
+  <p>
+    I work on scalable computer vision systems for analyzing dairy calf behavior in
+    agricultural environments. This work is part of a broader effort to support veterinary
+    researchers studying early indicators of disease and welfare.
+  </p>
+  <p><strong>My work has focused on:</strong></p>
+  <ul>
+    <li>
+      <strong>Pose classification using self-supervised visual features</strong> — extracting
+      features from pretrained DINO vision models and training lightweight classifiers for
+      posture recognition
+    </li>
+    <li>
+      <strong>Object detection for livestock monitoring</strong> — fine-tuning YOLO models
+      on a self-annotated dataset of dairy calves
+    </li>
+    <li>
+      <strong>Evaluating visual-language models (VLMs)</strong> — testing models for pose
+      recognition and eartag identification in farm environments
+    </li>
+    <li>
+      <strong>Building research tools</strong> — packaging the pipeline into an interactive
+      Jupyter workflow so veterinary researchers can easily run experiments and analyze data
+    </li>
+  </ul>
+  <p style="font-size:0.875rem;color:var(--color-text-muted)">
+    Conducted as part of the Bowers Undergraduate Research Experience (BURE) with support
+    from a CIDA grant.
+  </p>
+</div>
 
 ---
 
 ## Publications
 
 <div class="publication">
-  <p class="publication-title">Efficient Fine-Tuning of Language Models for Domain-Specific Classification</p>
-  <p class="publication-authors">Ryan Mye, Advisor Name</p>
-  <p class="publication-venue">Undergraduate Research Symposium, 2025</p>
+  <p class="publication-title">Effects of Firm Performance on CEO Compensation Before and During COVID-19</p>
+  <p class="publication-authors">Ryan Ye &mdash; Primary Author</p>
+  <p class="publication-venue">Research in Economics, 2023</p>
+  <p style="font-size:0.9rem;margin-top:0.5rem">
+    This research analyzed how firm performance influenced CEO compensation structures
+    before and during the COVID-19 pandemic, with a focus on changes in pay ratios and
+    incentive alignment.
+  </p>
   <div class="tags" style="margin-top:0.5rem">
-    <span class="tag">NLP</span>
-    <span class="tag">Fine-tuning</span>
-    <span class="tag">BERT</span>
-  </div>
-</div>
-
-<div class="publication">
-  <p class="publication-title">A Survey of Program Synthesis Techniques Using Neural Networks</p>
-  <p class="publication-authors">Ryan Mye</p>
-  <p class="publication-venue">Course Survey Paper, Advanced Topics in AI, 2024</p>
-  <div class="tags" style="margin-top:0.5rem">
-    <span class="tag">Program Synthesis</span>
-    <span class="tag">Survey</span>
-    <span class="tag">Neural Networks</span>
+    <span class="tag">Economics</span>
+    <span class="tag">CEO Compensation</span>
+    <span class="tag">COVID-19</span>
   </div>
 </div>
 
 ---
 
-## Research Projects
+## Research Interests
 
-### LLM Reliability Study *(Ongoing)*
+- **Machine learning and computer vision** — deep learning systems for real-world perception tasks
+- **AI for science** — using ML to accelerate research in biology, agriculture, and medicine
+- **Representation learning** — self-supervised and foundation models (DINO, VLMs)
+- **Data-efficient learning** — methods that work well with limited labeled data
 
-Investigating failure modes and consistency issues in large language models when
-applied to structured reasoning tasks. Building an evaluation harness to measure
-calibration and hallucination rates across multiple open-weight models.
-
-**Advisor:** [Professor Name], [Department]
-
-**Tools:** Python, HuggingFace Transformers, Weights & Biases
-
----
-
-### Automated Code Review Assistant *(2024)*
-
-Developed a prototype tool that uses a fine-tuned code language model to surface
-potential bugs and style issues in pull requests. Integrated with GitHub Actions
-for continuous review feedback.
-
-**Tools:** Python, CodeBERT, Flask, GitHub Actions

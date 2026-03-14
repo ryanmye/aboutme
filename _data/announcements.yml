@@ -1,0 +1,18 @@
+# Announcements are displayed in reverse-chronological order on the homepage.
+# Add new entries at the top. Dates must be in YYYY-MM-DD format.
+# Content supports basic HTML (links, <em>, <strong>).
+
+- date: 2026-03-10
+  content: >
+    My abstract on AI-assisted dairy calf behavior monitoring was accepted to the
+    Cornell Undergraduate Research Symposium.
+
+- date: 2026-02-01
+  content: >
+    Started Spring 2026 semester at Cornell — taking
+    <em>Machine Learning</em> and <em>iOS Development</em>.
+
+- date: 2025-09-01
+  content: >
+    Joined the <strong>Sun Lab</strong> at Cornell as a BURE researcher, supported
+    by a CIDA grant, working on computer vision for agricultural environments.
