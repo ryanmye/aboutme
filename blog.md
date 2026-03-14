@@ -10,25 +10,21 @@ permalink: /blog/
 </div>
 
 {% if site.posts.size > 0 %}
-<ul class="post-list" role="list">
+<table class="news-table post-preview-table">
   {% for post in site.posts %}
-  <li class="post-item">
-    <h2 class="post-item-title">
+  <tr>
+    <td class="news-date">
+      <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
+    </td>
+    <td class="news-content">
       <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-    </h2>
-    <p class="post-item-meta">
-      <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %-d, %Y" }}</time>
-      {% if post.tags and post.tags.size > 0 %}
-      &mdash;
-      {% for tag in post.tags %}<span class="tag">{{ tag }}</span> {% endfor %}
+      {% if post.excerpt %}
+      <span class="post-preview-text"> — {{ post.excerpt | strip_html | truncate: 80 }}</span>
       {% endif %}
-    </p>
-    {% if post.excerpt %}
-    <p class="post-item-excerpt">{{ post.excerpt | strip_html | truncate: 200 }}</p>
-    {% endif %}
-  </li>
+    </td>
+  </tr>
   {% endfor %}
-</ul>
+</table>
 {% else %}
-<p>No posts yet — check back soon!</p>
+<p class="news-empty">No posts yet — check back soon!</p>
 {% endif %}

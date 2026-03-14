@@ -57,7 +57,7 @@ title: "About"
 
 <div class="content-section">
   <div class="section-header">
-    <h2 class="section-title" style="border:none;padding:0;margin:0">Posts</h2>
+    <h2 class="section-title" style="border:none;padding:0;margin:0">Blog</h2>
     <a href="{{ '/blog' | relative_url }}">all posts &rarr;</a>
   </div>
 
