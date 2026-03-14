@@ -63,7 +63,7 @@ title: "About"
 
   {% if site.posts.size > 0 %}
   <table class="news-table post-preview-table">
-    {% for post in site.posts limit:10 %}
+    {% for post in site.posts limit:3 %}
     <tr>
       <td class="news-date">
         <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
