@@ -1,0 +1,32 @@
+title: "Ryan Mye"
+description: "Computer Science Student & Researcher"
+author: "Ryan Mye"
+email: "ryan@example.com"
+github_username: "ryanmye"
+linkedin_username: "ryanmye"
+url: "https://ryanmye.github.io"
+baseurl: "/Personal-Website"
+
+theme: null
+
+markdown: kramdown
+highlighter: rouge
+permalink: /blog/:year/:month/:day/:title/
+
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"

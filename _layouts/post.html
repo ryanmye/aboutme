@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page.title }} &mdash; {{ site.title }}</title>
+  <meta name="description" content="{{ page.excerpt | strip_html | truncate: 160 | default: site.description }}">
+  <meta name="author" content="{{ site.author }}">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="{{ page.title }}">
+  <meta property="og:description" content="{{ page.excerpt | strip_html | truncate: 160 | default: site.description }}">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="{{ page.url | absolute_url }}">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="{{ '/assets/css/styles.css' | relative_url }}">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👋</text></svg>">
+</head>
+<body>
+<div class="site-wrapper">
+
+  {% include navbar.html %}
+
+  <main id="main-content" role="main">
+    <div class="container">
+      <article>
+        <header class="post-header">
+          <h1>{{ page.title }}</h1>
+          <p class="post-date">
+            <time datetime="{{ page.date | date_to_xmlschema }}">
+              {{ page.date | date: "%B %-d, %Y" }}
+            </time>
+          </p>
+          {% if page.tags and page.tags.size > 0 %}
+          <div class="tags" aria-label="Post tags">
+            {% for tag in page.tags %}
+            <span class="tag">{{ tag }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </header>
+
+        <div class="post-content">
+          {{ content }}
+        </div>
+      </article>
+
+      <nav class="post-nav" aria-label="Post navigation">
+        <div>
+          {% if page.previous.url %}
+          <a href="{{ page.previous.url | relative_url }}">&larr; {{ page.previous.title }}</a>
+          {% endif %}
+        </div>
+        <div>
+          {% if page.next.url %}
+          <a href="{{ page.next.url | relative_url }}">{{ page.next.title }} &rarr;</a>
+          {% endif %}
+        </div>
+      </nav>
+    </div>
+  </main>
+
+  {% include footer.html %}
+
+</div>
+</body>
+</html>
