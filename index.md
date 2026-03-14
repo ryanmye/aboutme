@@ -13,7 +13,7 @@ title: "About"
     </p>
     <div class="profile-social">
       <a href="mailto:rmy43@cornell.edu" title="Email"><i class="fas fa-envelope"></i></a>
-      <a href="https://github.com/matthewj5" target="_blank" rel="noopener noreferrer" title="GitHub"><i class="fab fa-github"></i></a>
+      <a href="https://github.com/ryanmye" target="_blank" rel="noopener noreferrer" title="GitHub"><i class="fab fa-github"></i></a>
       <a href="https://www.linkedin.com/in/rmy43/" target="_blank" rel="noopener noreferrer" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
     </div>
   </div>
@@ -29,7 +29,7 @@ title: "About"
     <div class="profile-contact-row">
       <span><i class="fas fa-envelope fa-sm"></i> <a href="mailto:rmy43@cornell.edu">rmy43@cornell.edu</a></span>
       <span><i class="fab fa-linkedin fa-sm"></i> <a href="https://www.linkedin.com/in/rmy43/" target="_blank" rel="noopener noreferrer">linkedin.com/in/rmy43</a></span>
-      <span><i class="fab fa-github fa-sm"></i> <a href="https://github.com/matthewj5" target="_blank" rel="noopener noreferrer">github.com/matthewj5</a></span>
+      <span><i class="fab fa-github fa-sm"></i> <a href="https://github.com/ryanmye" target="_blank" rel="noopener noreferrer">github.com/ryanmye</a></span>
     </div>
     <p class="spotify-widget">
       <i class="fab fa-spotify" style="color:#1DB954"></i>

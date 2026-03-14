@@ -33,7 +33,7 @@ permalink: /projects/
 
   <article class="card">
     <h2 class="card-title">
-      <a href="https://github.com/matthewj5" target="_blank" rel="noopener noreferrer">Sisyphus &mdash; AI Productivity App</a>
+      <a href="https://github.com/ryanmye" target="_blank" rel="noopener noreferrer">Sisyphus &mdash; AI Productivity App</a>
     </h2>
     <p class="card-description">
       Full-stack web application that enforces productivity commitments through AI verification.
@@ -51,7 +51,7 @@ permalink: /projects/
       <li>Automated accountability system with reminders</li>
     </ul>
     <div class="card-links">
-      <a href="https://github.com/matthewj5" target="_blank" rel="noopener noreferrer">GitHub &rarr;</a>
+      <a href="https://github.com/ryanmye" target="_blank" rel="noopener noreferrer">GitHub &rarr;</a>
     </div>
   </article>
 

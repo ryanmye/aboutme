@@ -50,5 +50,5 @@ Relevant coursework:
 
 - **Email:** [rmy43@cornell.edu](mailto:rmy43@cornell.edu)
 - **LinkedIn:** [linkedin.com/in/rmy43](https://www.linkedin.com/in/rmy43/)
-- **GitHub:** [github.com/matthewj5](https://github.com/matthewj5)
+- **GitHub:** [github.com/ryanmye](https://github.com/ryanmye)
 
