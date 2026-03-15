@@ -27,7 +27,7 @@ permalink: /projects/
       {% endfor %}
     </div>
     {% if project.bullets.size > 0 %}
-    <ul style="font-size:0.875rem;margin-top:0.75rem;color:var(--color-text-muted)">
+    <ul style="font-size:0.875rem;margin-top:0.75rem;color:var(--muted)">
       {% for bullet in project.bullets %}
       <li>{{ bullet }}</li>
       {% endfor %}

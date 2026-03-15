@@ -66,10 +66,10 @@ permalink: /cv/
     <div class="resume-item-header">
       <span class="resume-item-title">Sisyphus &mdash; AI Productivity App</span>
     </div>
-    <p class="resume-item-sub">Node.js, Express, Claude API</p>
+    <p class="resume-item-sub">Claude API, Code directing, vibe coding</p>
     <ul>
       <li>Full-stack app enforcing productivity commitments through AI photo verification</li>
-      <li>Top 5 out of 40+ teams in course competition</li>
+      <li>Top 5 out of 40+ teams in tight competition!</li>
     </ul>
   </div>
 

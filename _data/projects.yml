@@ -11,7 +11,7 @@ projects:
 
   - title: "Sisyphus — AI Productivity App"
     description: "Full-stack web application that enforces productivity commitments through AI verification. Placed Top 5 out of 40+ teams in a course competition."
-    tags: ["Node.js", "Express", "Claude API", "Full-Stack"]
+    tags: ["Claude API", "Full-Stack", "Code Direction", "vibe coding"]
     bullets:
       - "Task timer and workflow tracking"
       - "Photo-based task verification using an LLM API"

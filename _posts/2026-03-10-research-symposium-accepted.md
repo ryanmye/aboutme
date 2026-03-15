@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Research Symposium Abstract Accepted"
+title: "Abstract accepted to ADSA!"
 date: 2026-03-12
 tags: [research, life-update]
 excerpt: "My abstract on AI-assisted dairy calf behavior monitoring was accepted to the Cornell Undergraduate Research Symposium."

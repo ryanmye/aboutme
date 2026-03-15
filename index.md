@@ -6,7 +6,7 @@ title: "About"
 <div class="profile-section">
   <div class="profile-left">
     <div class="profile-avatar">
-      <img src="{{ '/assets/images/headshot.jpeg' | relative_url }}" alt="Ryan Ye">
+      <img src="{{ '/assets/images/headshot.jpeg' | relative_url }}" alt="Ryan Ye" width="160" height="160" decoding="async">
     </div>
     <h1 class="profile-name">Ryan Ye</h1>
     <p class="profile-position">
@@ -14,27 +14,38 @@ title: "About"
       <a href="https://www.cs.cornell.edu/" target="_blank" rel="noopener noreferrer">Cornell University</a>
     </p>
     <div class="profile-social">
-      <a href="mailto:rmy43@cornell.edu" title="Email"><i class="fas fa-envelope"></i></a>
-      <a href="https://github.com/ryanmye" target="_blank" rel="noopener noreferrer" title="GitHub"><i class="fab fa-github"></i></a>
-      <a href="https://www.linkedin.com/in/rmy43/" target="_blank" rel="noopener noreferrer" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+      <a href="mailto:rmy43@cornell.edu" title="Email"><i class="fas fa-envelope" aria-hidden="true"></i></a>
+      <a href="https://github.com/ryanmye" target="_blank" rel="noopener noreferrer" title="GitHub"><i class="fab fa-github" aria-hidden="true"></i></a>
+      <a href="https://www.linkedin.com/in/rmy43/" target="_blank" rel="noopener noreferrer" title="LinkedIn"><i class="fab fa-linkedin" aria-hidden="true"></i></a>
     </div>
   </div>
 
   <div class="profile-right">
     <p>
       I'm Ryan Ye, an undergraduate in Computer Science at Cornell University. I work on
-      computer vision and machine learning in the Sun Lab (PI: Jennifer Sun), currently
+      computer vision and machine learning in the <a href="https://akanksha-sarkar.github.io/SunLab-website/" target="_blank" rel="noopener noreferrer">Sun Lab</a> (PI: Jennifer Sun), currently
       building systems for animal behavior monitoring in agricultural environments. I'm
       currently interested in AI for science and making research tools that augment
       scientist workflows.
     </p>
     <div class="profile-contact-row">
-      <span><i class="fas fa-envelope fa-sm"></i> <a href="mailto:rmy43@cornell.edu">rmy43@cornell.edu</a></span>
-      <span><i class="fab fa-linkedin fa-sm"></i> <a href="https://www.linkedin.com/in/rmy43/" target="_blank" rel="noopener noreferrer">linkedin.com/in/rmy43</a></span>
-      <span><i class="fab fa-github fa-sm"></i> <a href="https://github.com/ryanmye" target="_blank" rel="noopener noreferrer">github.com/ryanmye</a></span>
+      <span><i class="fas fa-envelope fa-sm" aria-hidden="true"></i> <a href="mailto:rmy43@cornell.edu">rmy43@cornell.edu</a></span>
+      <span><i class="fab fa-linkedin fa-sm" aria-hidden="true"></i> <a href="https://www.linkedin.com/in/rmy43/" target="_blank" rel="noopener noreferrer">linkedin.com/in/rmy43</a></span>
+      <span><i class="fab fa-github fa-sm" aria-hidden="true"></i> <a href="https://github.com/ryanmye" target="_blank" rel="noopener noreferrer">github.com/ryanmye</a></span>
     </div>
-    <p class="spotify-widget">
-      <i class="fab fa-spotify" style="color:#1DB954"></i>
+    <div class="profile-skills">
+      <span class="profile-skills-label">Programming:</span>
+      <div class="profile-skills-row">
+        {% for s in site.data.about.skills.programming | split: ", " %}<span class="tag">{{ s }}</span>{% endfor %}
+      </div>
+      <span class="profile-skills-label">ML & tools:</span>
+      <div class="profile-skills-row">
+        {% for s in site.data.about.skills.machine_learning | split: ", " %}<span class="tag">{{ s }}</span>{% endfor %}
+        {% for s in site.data.about.skills.tools | split: ", " %}<span class="tag">{{ s }}</span>{% endfor %}
+      </div>
+    </div>
+    <p class="spotify-widget" aria-live="polite" aria-atomic="true">
+      <i class="fab fa-spotify" style="color:#1DB954" aria-hidden="true"></i>
       <span id="spotify-now-playing">Loading&hellip;</span>
     </p>
   </div>
@@ -65,6 +76,13 @@ title: "About"
 
   {% if site.posts.size > 0 %}
   <table class="news-table post-preview-table">
+    <thead>
+      <tr>
+        <th scope="col">Date</th>
+        <th scope="col">Post</th>
+      </tr>
+    </thead>
+    <tbody>
     {% for post in site.posts limit:3 %}
     <tr>
       <td class="news-date">
@@ -78,6 +96,7 @@ title: "About"
       </td>
     </tr>
     {% endfor %}
+    </tbody>
   </table>
   {% else %}
   <p class="news-empty">No posts yet — check back soon!</p>
@@ -102,7 +121,7 @@ title: "About"
       features, YOLO-based object detection on a self-annotated dataset, and evaluation
       of vision-language models for farm settings.
     </p>
-    <p style="font-size:0.875rem;color:var(--color-text-muted)">
+    <p style="font-size:0.875rem;color:var(--muted)">
       Conducted as part of the Bowers Undergraduate Research Experience (BURE) with
       support from a CIDA grant.
     </p>
@@ -133,7 +152,9 @@ title: "About"
   /* ── Spotify "recently listened" ── */
   var spotifyEl = document.getElementById('spotify-now-playing');
   if (spotifyEl) {
-    fetch('{{ "/assets/data/now-playing.json" | relative_url }}?t=' + Date.now())
+    var controller = new AbortController();
+    var timeoutId = setTimeout(function () { controller.abort(); }, 5000);
+    fetch('{{ "/assets/data/now-playing.json" | relative_url }}?t=' + Date.now(), { signal: controller.signal })
       .then(function (r) { return r.json(); })
       .then(function (data) {
         if (!data.track) { spotifyEl.textContent = 'No recent tracks.'; return; }
@@ -147,7 +168,8 @@ title: "About"
           escapeHtml(t.name) + '</a> by ' + artistLinks +
           ' <span class="spotify-time">(' + timeAgo(t.played_at) + ')</span>';
       })
-      .catch(function () { spotifyEl.textContent = 'Could not load recent track.'; });
+      .catch(function () { spotifyEl.textContent = 'Could not load recent track.'; })
+      .finally(function () { clearTimeout(timeoutId); });
   }
 })();
 </script>

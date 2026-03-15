@@ -11,6 +11,13 @@ permalink: /blog/
 
 {% if site.posts.size > 0 %}
 <table class="news-table post-preview-table">
+  <thead>
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Post</th>
+    </tr>
+  </thead>
+  <tbody>
   {% for post in site.posts %}
   <tr>
     <td class="news-date">
@@ -24,6 +31,7 @@ permalink: /blog/
     </td>
   </tr>
   {% endfor %}
+  </tbody>
 </table>
 {% else %}
 <p class="news-empty">No posts yet — check back soon!</p>

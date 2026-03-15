@@ -14,34 +14,11 @@ permalink: /research/
   </p>
 </div>
 
-## Research Position
-
-<div class="research-entry">
-  <h3>{{ site.data.research.position.title }}</h3>
-  <p class="research-meta">
-    <span class="research-role">{{ site.data.research.position.role }}</span> &mdash; {{ site.data.research.position.lab }}, {{ site.data.research.position.institution }}
-  </p>
-  <p>{{ site.data.research.position.description }}</p>
-  <p><strong>My work has focused on:</strong></p>
-  <ul>
-    {% for item in site.data.research.position.focus %}
-    <li>
-      <strong>{{ item.title }}</strong> — {{ item.detail }}
-    </li>
-    {% endfor %}
-  </ul>
-  <p style="font-size:0.875rem;color:var(--color-text-muted)">
-    {{ site.data.research.position.note }}
-  </p>
-</div>
-
----
-
 ## Publications
 
 {% for pub in site.data.research.publications %}
 <div class="publication">
-  <p class="publication-title">{{ pub.title }}</p>
+  <p class="publication-title">{% if pub.url %}<a href="{{ pub.url }}" target="_blank" rel="noopener noreferrer">{{ pub.title }}</a>{% else %}{{ pub.title }}{% endif %}</p>
   <p class="publication-authors">{{ pub.authors }}</p>
   <p class="publication-venue">{{ pub.venue }}</p>
   <p style="font-size:0.9rem;margin-top:0.5rem">{{ pub.description }}</p>
@@ -51,6 +28,37 @@ permalink: /research/
     {% endfor %}
   </div>
 </div>
+{% endfor %}
+
+---
+
+## Research Positions
+
+{% for position in site.data.research.positions %}
+<div class="research-entry">
+  <h3>{{ position.title }}</h3>
+  <p class="research-meta">
+    <span class="research-role">{{ position.role }}</span> &mdash; {{ position.lab }}, {{ position.institution }}
+    &mdash; <span class="research-date">{{ position.date }}</span>
+  </p>
+  <p>{{ position.description }}</p>
+  <p><strong>My work has focused on:</strong></p>
+  <ul>
+    {% for item in position.focus %}
+    <li>
+      <strong>{{ item.title }}</strong> — {{ item.detail }}
+    </li>
+    {% endfor %}
+  </ul>
+  {% if position.note %}
+  <p style="font-size:0.875rem;color:var(--muted)">
+    {{ position.note }}
+  </p>
+  {% endif %}
+</div>
+{% unless forloop.last %}
+---
+{% endunless %}
 {% endfor %}
 
 ---

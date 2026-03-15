@@ -2,30 +2,43 @@
 subtitle: "Computer vision, machine learning, and AI for scientific discovery."
 google_scholar: "https://scholar.google.com/citations?user=RhqHy9sAAAAJ&hl=en"
 
-position:
-  title: "AI for Animal Behavior Monitoring - Accepted to ADSA Poster!"
-  role: "Undergraduate Researcher"
-  lab: "Sun Lab (PI: Jennifer Sun)"
-  institution: "Cornell University"
-  description: |
-    I work on scalable computer vision systems for analyzing dairy calf behavior in
-    agricultural environments. This work is part of a broader effort to support veterinary
-    researchers studying early indicators of disease and welfare.
-  focus:
-    - title: "Pose classification using self-supervised visual features"
-      detail: "extracting features from pretrained DINO vision models and training lightweight classifiers for posture recognition"
-    - title: "Object detection for livestock monitoring"
-      detail: "fine-tuning YOLO models on a self-annotated dataset of dairy calves"
-    - title: "Evaluating visual-language models (VLMs)"
-      detail: "testing models for pose recognition and eartag identification in farm environments"
-    - title: "Building research tools"
-      detail: "packaging the pipeline into an interactive Jupyter workflow so veterinary researchers can easily run experiments and analyze data"
-  note: "Conducted as part of the Bowers Undergraduate Research Experience (BURE) with support from a CIDA grant."
+positions:
+  - title: "MABe25 - Animal Behavior Benchmark"
+    role: "Undergraduate Researcher"
+    lab: "Sun Lab (PI: Jennifer Sun)"
+    institution: "Cornell University"
+    date: "Fall 2025 - Present"
+    description: |
+      Benchmarking video-based AI models for classifying animal behavior
+      across 16 research labs as part of the MABe25 competition.
+    focus:
+      - title: "Large-scale video understanding"
+        detail: "evaluating whether pretrained video transformers (VideoMAE2, VideoPrism) can generalize to specialized behavioral science data across diverse lab settings"
+      - title: "Multi-lab benchmark infrastructure"
+        detail: "a dataset spanning 16 labs with varied recording conditions, designed to test model robustness for real-world scientific use"
 
+  - title: "AI for Animal Behavior Monitoring - Project accepted to ADSA 2026 Poster!"
+    role: "Undergraduate Researcher"
+    lab: "Sun Lab (PI: Jennifer Sun)"
+    institution: "Cornell University"
+    date: "May 2025 - Present"
+    description: |
+      Building scalable computer vision systems for analyzing dairy calf behavior in
+      agricultural environments, supporting veterinary researchers studying early
+      indicators of disease and welfare.
+    focus:
+      - title: "Self-supervised vision for livestock monitoring"
+        detail: "a pipeline using DINOv3 features and YOLOv11 detection to classify calf posture from farm camera footage with limited labeled data"
+      - title: "Bridging AI and veterinary research"
+        detail: "an interactive Jupyter workflow enabling everyone to run experiments and interpret results"
+      - title: "Paper: \"Automating pose detection in calves: a computer vision framework for non-invasive behavioral monitoring.\""
+        detail: "Accepted to ADSA 2026 — thank you to all my advisors!"
+    note: "Conducted as part of the Bowers Undergraduate Research Experience (BURE) with support from a CIDA grant."
 publications:
   - title: "Effects of Firm Performance on CEO Compensation Before and During COVID-19"
     authors: "Ryan Ye — Primary Author"
     venue: "Research in Economics, 2023"
+    url: "https://doi.org/10.1016/j.rie.2023.07.002"
     description: "This research analyzed how firm performance influenced CEO compensation structures before and during the COVID-19 pandemic, with a focus on changes in pay ratios and incentive alignment."
     tags: ["Economics", "CEO Compensation", "COVID-19"]
 
