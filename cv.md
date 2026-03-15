@@ -4,7 +4,7 @@ title: "CV"
 permalink: /cv/
 ---
 
-<div class="page-header">
+<div class="page-header page-header-resume">
   <h1>CV</h1>
   <p class="resume-download">
     <a href="{{ '/25Dec_Ye_Ryan_Resume.pdf' | relative_url }}" target="_blank" rel="noopener noreferrer" class="btn-download">

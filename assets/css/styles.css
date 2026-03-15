@@ -775,6 +775,18 @@ main {
 /* ===========================
    CV / Resume Page
    =========================== */
+.page-header-resume {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.page-header-resume .resume-download {
+  margin: 0;
+}
+
 .resume-download {
   margin: 0.75rem 0 0;
 }
