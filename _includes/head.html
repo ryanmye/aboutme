@@ -11,8 +11,8 @@
 <meta property="og:url" content="{{ page.url | absolute_url }}">
 
 <!-- Stylesheet (preload for critical path) -->
-<link rel="preload" href="{{ '/assets/css/styles.css' | relative_url }}" as="style">
-<link rel="stylesheet" href="{{ '/assets/css/styles.css' | relative_url }}">
+<link rel="preload" href="{{ '/assets/css/styles.css' | relative_url }}?v={{ site.time | date: '%s' }}" as="style">
+<link rel="stylesheet" href="{{ '/assets/css/styles.css' | relative_url }}?v={{ site.time | date: '%s' }}">
 
 <!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
