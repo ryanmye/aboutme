@@ -91,6 +91,15 @@
     setTheme('warm');
   }
 
+  window.addEventListener('load', function () {
+    var current = localStorage.getItem('theme') || 'warm';
+    if (themes[current]) {
+      requestAnimationFrame(function () {
+        updateToggleUI(current);
+      });
+    }
+  });
+
   document.querySelectorAll('.theme-dot').forEach(function (dot) {
     dot.addEventListener('click', function () {
       setTheme(dot.dataset.theme);
