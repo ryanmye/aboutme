@@ -1,5 +1,18 @@
 (function () {
   var themes = {
+    warm: {
+      '--theme-dot-border': 'transparent',
+      '--bg':           '#FAF5EE',
+      '--surface':      '#FFFFFF',
+      '--border':       '#E6D9C8',
+      '--text':         '#2A1F16',
+      '--muted':        '#8A7565',
+      '--accent':       '#C4785A',
+      '--accent-soft':  '#F5E6DC',
+      '--accent-dark':  '#9E5A40',
+      '--color-code-bg': '#F5E6DC',
+      '--color-code-text': '#2A1F16',
+    },
     linen: {
       '--theme-dot-border': 'transparent',
       '--bg':           '#F8F5F1',
@@ -71,11 +84,11 @@
     });
   }
 
-  var saved = localStorage.getItem('theme') || 'linen';
+  var saved = localStorage.getItem('theme') || 'warm';
   if (themes[saved]) {
     setTheme(saved);
   } else {
-    setTheme('linen');
+    setTheme('warm');
   }
 
   document.querySelectorAll('.theme-dot').forEach(function (dot) {
