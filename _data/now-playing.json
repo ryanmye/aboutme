@@ -1,4 +1,14 @@
 {
-  "track": null,
-  "fetched_at": ""
+  "track": {
+    "name": "drivers license",
+    "url": "https://open.spotify.com/track/5wANPM4fQCJwkGd4rN57mH",
+    "artists": [
+      {
+        "name": "Olivia Rodrigo",
+        "url": "https://open.spotify.com/artist/1McMsnEElThX1knmY4oliG"
+      }
+    ],
+    "played_at": "2026-03-16T21:17:44.901Z"
+  },
+  "fetched_at": "2026-03-16T21:21:02Z"
 }
