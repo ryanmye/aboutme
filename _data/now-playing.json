@@ -1,4 +1,14 @@
 {
-  "track": null,
-  "fetched_at": ""
+  "track": {
+    "name": "Flightless Bird, American Mouth",
+    "url": "https://open.spotify.com/track/1fEGtTZjrjJW8eUeewnNJR",
+    "artists": [
+      {
+        "name": "Iron & Wine",
+        "url": "https://open.spotify.com/artist/4M5nCE77Qaxayuhp3fVn4V"
+      }
+    ],
+    "played_at": "2026-03-16T21:21:47.308Z"
+  },
+  "fetched_at": "2026-03-16T21:24:29Z"
 }
