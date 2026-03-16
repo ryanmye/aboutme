@@ -1,6 +1,7 @@
-# Projects showcase
+# Projects showcase (ordered: present first, then by end date descending)
 projects:
   - title: "Automated Calf Behavior Analysis System"
+    date: "May 2025 - present"
     description: "Computer vision pipeline for analyzing calf posture and behavior from overhead video. Designed to help veterinary researchers scale behavioral data collection beyond manual observation."
     tags: ["Python", "YOLO", "DINO", "Computer Vision"]
     bullets:
@@ -9,16 +10,26 @@ projects:
       - "Evaluation of VLMs for pose and eartag recognition"
     url: null
 
-  - title: "Sisyphus — AI Productivity App"
-    description: "Full-stack web application that enforces productivity commitments through AI verification. Placed Top 5 out of 40+ teams in a course competition."
-    tags: ["Claude API", "Full-Stack", "Code Direction", "vibe coding"]
+  - title: "Traveling Salesman — Conversational Flight Search"
+    date: "Mar 2026"
+    description: "Hackathon project: conversational flight search tool with an interactive trip planner. Describe trips in natural language (e.g. 'fly from NYC to somewhere warm in late June, under $400') and get results on an interactive 2D/3D map."
+    tags: ["UI envisioning", "vibe coding"]
     bullets:
-      - "Task timer and workflow tracking"
-      - "Photo-based task verification using an LLM API"
-      - "Automated accountability system with reminders"
-    url: "https://github.com/ryanmye/sisyphus"
+      - "Designed and implemented the frontend for Traveling Salesman, a conversational flight search tool with an interactive trip planner"
+      - "Built React UI with split-screen chat, interactive 2D/3D map, and collaborative trip sharing"
+    url: "https://github.com/boaz-ng/traveling-salesmen"
+
+  - title: "Sisyphus — AI Productivity App"
+    date: "Nov 2025"
+    description: "Full-stack web application that enforces productivity commitments through AI verification. Placed Top 5 out of 40+ teams in a course competition."
+    tags: ["Full-Stack", "React.js", "Claude API"]
+    bullets:
+      - "Designed and implemented full-stack application with React frontend and Node.js backend"
+      - "Photo-based task verification using Claude API; automated accountability system with email notifications"
+    url: "https://github.com/matthewj5/sisyphus"
 
   - title: "Transformer-Based Piano Melody Generation"
+    date: "Aug 2023 - Apr 2024"
     description: "Research project exploring neural music generation with transformer architectures trained on large MIDI datasets."
     tags: ["Python", "PyTorch", "Transformers", "Music AI"]
     bullets:
@@ -28,6 +39,7 @@ projects:
     url: null
 
   - title: "Personal Website"
+    date: "Mar 2026"
     description: "This site! A clean, fast academic personal website built with Jekyll and hosted on GitHub Pages. Includes a blog, project showcase, and research section."
     tags: ["Jekyll", "HTML/CSS", "GitHub Pages", "vibe coding"]
     bullets: []

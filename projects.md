@@ -20,6 +20,7 @@ permalink: /projects/
       {{ project.title }}
       {% endif %}
     </h2>
+    {% if project.date %}<p class="card-date">{{ project.date }}</p>{% endif %}
     <p class="card-description">{{ project.description }}</p>
     <div class="tags">
       {% for tag in project.tags %}

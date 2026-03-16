@@ -29,6 +29,6 @@ education:
     - "iOS Development"
 
 skills:
-  programming: "Python, Java, C++, OCaml"
+  programming: "Python, Java, C/C++, OCaml"
   machine_learning: "PyTorch, Hugging Face Transformers, NumPy, pandas, Matplotlib"
   tools: "Git, VS Code, Jupyter Notebook, IntelliJ, PyCharm, SSH, vibe-coding"

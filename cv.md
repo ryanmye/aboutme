@@ -36,7 +36,7 @@ permalink: /cv/
   <div class="resume-item">
     <div class="resume-item-header">
       <span class="resume-item-title">Undergraduate Researcher &mdash; Sun Lab</span>
-      <span class="resume-item-date">Cornell University</span>
+      <span class="resume-item-date">May 2025 - present &middot; Cornell University</span>
     </div>
     <p class="resume-item-sub">Bowers Undergraduate Research Experience (BURE) &mdash; CIDA Grant Recipient</p>
     <ul>
@@ -64,18 +64,33 @@ permalink: /cv/
   <h2>Projects</h2>
   <div class="resume-item">
     <div class="resume-item-header">
-      <span class="resume-item-title">Sisyphus &mdash; AI Productivity App</span>
+      <span class="resume-item-title"><a href="https://github.com/boaz-ng/traveling-salesmen" target="_blank" rel="noopener noreferrer">Traveling Salesman &mdash; Conversational Flight Search</a></span>
+      <span class="resume-item-date">Mar 2026</span>
     </div>
-    <p class="resume-item-sub">Claude API, Code directing, vibe coding</p>
+    <p class="resume-item-sub">React.js, Backend Integration, REST API &middot; <a href="https://github.com/boaz-ng/traveling-salesmen" target="_blank" rel="noopener noreferrer">GitHub</a></p>
     <ul>
-      <li>Full-stack app enforcing productivity commitments through AI photo verification</li>
-      <li>Top 5 out of 40+ teams in tight competition!</li>
+      <li>Designed and implemented the frontend for Traveling Salesman, a conversational flight search tool with an interactive trip planner</li>
+      <li>Built React.js UI with split-screen chat, interactive 2D/3D map, and collaborative trip sharing; integrated with FastAPI backend via REST</li>
+    </ul>
+  </div>
+
+  <div class="resume-item">
+    <div class="resume-item-header">
+      <span class="resume-item-title"><a href="https://github.com/matthewj5/sisyphus" target="_blank" rel="noopener noreferrer">Sisyphus &mdash; AI Productivity App</a></span>
+      <span class="resume-item-date">Nov 2025</span>
+    </div>
+    <p class="resume-item-sub">Full-Stack, React.js, Claude API, REST API &middot; <a href="https://github.com/matthewj5/sisyphus" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+    <ul>
+      <li>Designed and implemented full-stack application with React frontend and Node.js backend</li>
+      <li>AI-powered task verification via Claude API; automated accountability system with email notifications</li>
+      <li>Top 5 out of 40+ teams in course competition</li>
     </ul>
   </div>
 
   <div class="resume-item">
     <div class="resume-item-header">
       <span class="resume-item-title">Transformer-Based Piano Melody Generation</span>
+      <span class="resume-item-date">Aug 2023 - Apr 2024</span>
     </div>
     <p class="resume-item-sub">Python, PyTorch, MusicAutobot</p>
     <ul>
@@ -90,10 +105,11 @@ permalink: /cv/
   <div class="resume-item">
     <div class="resume-item-header">
       <span class="resume-item-title">Basic Coding &mdash; Co-Founder &amp; President</span>
+      <span class="resume-item-date">Aug 2020 - May 2024</span>
     </div>
     <p class="resume-item-sub">Volunteer online programming education during COVID-19</p>
     <ul>
-      <li>Taught Python, Java, and C++ to elementary and middle school students</li>
+      <li>Taught Python, Java, and C/C++ to elementary and middle school students</li>
       <li>Reached 300+ students across multiple U.S. states</li>
     </ul>
   </div>
@@ -102,7 +118,7 @@ permalink: /cv/
 <div class="resume-section">
   <h2>Skills</h2>
   <div class="resume-item">
-    <p><strong>Programming:</strong> Python, Java, C++, OCaml</p>
+    <p><strong>Programming:</strong> Python, Java, C/C++, OCaml</p>
     <p><strong>Machine Learning:</strong> PyTorch, Hugging Face Transformers, NumPy, pandas, Matplotlib</p>
     <p><strong>Tools:</strong> Git, VS Code, Jupyter Notebook, IntelliJ, PyCharm, SSH, vibe-coding</p>
   </div>
