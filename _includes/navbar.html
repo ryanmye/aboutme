@@ -39,7 +39,8 @@
       });
       document.addEventListener('click', function (e) {
         if (!links.classList.contains('open')) return;
-        if (links.contains(e.target) || toggle.contains(e.target)) return;
+        var themeToggle = document.getElementById('theme-toggle');
+        if (links.contains(e.target) || toggle.contains(e.target) || (themeToggle && themeToggle.contains(e.target))) return;
         links.classList.remove('open');
         toggle.setAttribute('aria-expanded', 'false');
       });
