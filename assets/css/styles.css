@@ -70,6 +70,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+body.nav-open {
+  overflow: hidden;
+}
+
 h1, h2, h3, h4, h5, h6 {
   line-height: 1.3;
   font-weight: 500;
@@ -260,12 +264,11 @@ main {
   border: 0.5px solid transparent;
   cursor: pointer;
   padding: 0;
-  transition: outline 0.15s ease;
+  transition: box-shadow 0.15s ease;
 }
 
 .theme-dot.active {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  box-shadow: 0 0 0 1.5px var(--accent);
 }
 
 .theme-dot:focus-visible {
@@ -986,7 +989,7 @@ main {
   .nav-links {
     display: none;
     flex-direction: column;
-    position: absolute;
+    position: fixed;
     top: var(--nav-height);
     left: 0;
     right: 0;
@@ -994,17 +997,27 @@ main {
     border-bottom: 0.5px solid var(--border);
     padding: 0.75rem 1.5rem;
     gap: 0;
+    z-index: 90;
   }
 
   .nav-links li {
     align-items: center;
+    background: var(--surface);
+    width: 100%;
   }
 
   .nav-links a {
     padding: 0.6rem 0;
-    border-bottom: none;
     width: 100%;
-    border-bottom: 0.5px solid transparent;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .nav-links a:last-child {
+    border-bottom: none;
+  }
+
+  .nav-links a.active {
+    border-bottom-color: var(--border);
   }
 
   .nav-links.open { display: flex; }
