@@ -248,6 +248,9 @@ main {
   display: flex;
   gap: 8px;
   align-items: center;
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
 }
 
 .theme-dot {
