@@ -1,0 +1,4 @@
+local_editor: false
+exclude:
+  - editor.md
+  - scripts/local_editor_server.rb

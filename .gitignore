@@ -19,3 +19,7 @@ Thumbs.db
 *.swo
 
 .env
+
+# Local-only editor drafts and draft images
+_drafts/
+assets/images/drafts/

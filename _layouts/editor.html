@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include head.html %}
+  <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css">
+</head>
+<body>
+<div class="site-wrapper">
+
+  {% include navbar.html %}
+
+  <main id="main-content" role="main">
+    <div class="container">
+      <div class="page-content">
+        {{ content }}
+
+        <div class="page-content-editor">
+          <form id="post-form" class="editor-form" autocomplete="off">
+            <section class="editor-meta">
+              <div class="editor-field">
+                <label for="post-title">Title</label>
+                <input id="post-title" name="title" type="text" required>
+              </div>
+              <div class="editor-field">
+                <label for="post-date">Date</label>
+                <input id="post-date" name="date" type="datetime-local">
+              </div>
+              <div class="editor-field">
+                <label for="post-tags">Tags (comma-separated)</label>
+                <input id="post-tags" name="tags" type="text" placeholder="ai, vision, research">
+              </div>
+              <div class="editor-field editor-field-inline">
+                <label for="post-draft">
+                  <input id="post-draft" name="draft" type="checkbox">
+                  Draft
+                </label>
+              </div>
+            </section>
+
+            <section class="editor-body">
+              <label for="post-body">Body</label>
+              <div id="post-editor"></div>
+              <textarea id="post-body" name="body" rows="18" spellcheck="true" hidden></textarea>
+            </section>
+
+            <section class="editor-images">
+              <h2>Images</h2>
+              <p class="editor-help">
+                Upload an image to <code>assets/images/posts/</code>, then insert markdown at the current cursor position.
+              </p>
+              <div class="editor-image-row">
+                <input id="image-file" type="file" accept="image/*">
+                <input id="image-caption" type="text" placeholder="Description (becomes caption)">
+                <button type="button" id="upload-insert-image">Upload &amp; Insert</button>
+              </div>
+            </section>
+
+            <section class="editor-actions">
+              <button type="button" id="new-post">New post</button>
+              <button type="submit" id="save-post">Save post</button>
+              <button type="button" id="publish-post">Publish draft</button>
+              <button type="button" id="delete-post">Delete post</button>
+            </section>
+          </form>
+
+          <section class="editor-post-list">
+            <h2>Existing posts</h2>
+            <p class="editor-help">Select a post to load it into the editor.</p>
+            <ul id="post-list" class="editor-posts"></ul>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  {% include footer.html %}
+
+</div>
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<script src="{{ '/assets/js/editor.js' | relative_url }}"></script>
+</body>
+</html>
+

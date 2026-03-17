@@ -17,6 +17,8 @@ kramdown:
   input: GFM
   syntax_highlighter: rouge
 
+local_editor: true
+
 exclude:
   - README.md
   - Gemfile

@@ -345,6 +345,163 @@ main {
 }
 
 /* ===========================
+   Editor
+   =========================== */
+.page-content-editor {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 2.5rem;
+}
+
+.editor-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.editor-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.editor-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+}
+
+.editor-field-inline {
+  justify-content: flex-end;
+}
+
+.editor-field label {
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.editor-field input[type="text"],
+.editor-field input[type="datetime-local"] {
+  border-radius: 4px;
+  border: 0.5px solid var(--border);
+  padding: 0.35rem 0.5rem;
+  font-size: 0.9rem;
+}
+
+.editor-body textarea {
+  width: 100%;
+  border-radius: 6px;
+  border: 0.5px solid var(--border);
+  padding: 0.6rem 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.toastui-editor-defaultUI {
+  border-radius: 6px;
+  border: 0.5px solid var(--border);
+}
+
+.toastui-editor-defaultUI .toastui-editor-toolbar {
+  border-bottom: 0.5px solid var(--border);
+}
+
+.toastui-editor-contents {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+}
+
+.editor-images {
+  border-radius: 6px;
+  border: 0.5px solid var(--border);
+  padding: 0.75rem 0.9rem;
+}
+
+.editor-image-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.editor-image-row input[type="file"] {
+  font-size: 0.8rem;
+}
+
+.editor-image-row input[type="text"] {
+  flex: 1;
+  min-width: 120px;
+  border-radius: 4px;
+  border: 0.5px solid var(--border);
+  padding: 0.35rem 0.5rem;
+  font-size: 0.85rem;
+}
+
+.editor-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.editor-actions button,
+.editor-image-row button {
+  border-radius: 4px;
+  border: 0.5px solid var(--border);
+  background: var(--surface);
+  padding: 0.35rem 0.75rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.editor-actions button#save-post {
+  border-color: var(--accent);
+}
+
+.editor-post-list {
+  font-size: 0.85rem;
+}
+
+.editor-posts {
+  list-style: none;
+  padding-left: 0;
+  margin: 0.5rem 0 0;
+  border-radius: 6px;
+  border: 0.5px solid var(--border);
+}
+
+.editor-post-item {
+  padding: 0.45rem 0.7rem;
+  border-bottom: 0.5px solid var(--border);
+  cursor: pointer;
+}
+
+.editor-post-item:last-child {
+  border-bottom: none;
+}
+
+.editor-post-item:hover {
+  background: var(--surface);
+}
+
+.editor-help {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+@media (max-width: 900px) {
+  .page-content-editor {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .editor-meta {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ===========================
    Profile Section (al-folio style)
    =========================== */
 .profile-section {
@@ -774,6 +931,50 @@ main {
   padding: 0.5rem 1.25rem;
   color: var(--muted);
   font-style: italic;
+}
+
+.post-content img {
+  display: block;
+  margin: 1.25rem auto;
+  border-radius: 6px;
+}
+
+/* Editor figure.post-image: 65% of text width (~65ch) on large screens, full width on small */
+.post-content figure.post-image {
+  --text-width: 65ch;
+  max-width: calc(0.65 * var(--text-width));
+  margin-left: auto;
+  margin-right: auto;
+}
+.post-content figure.post-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 6px;
+}
+.post-content figure.post-image figcaption {
+  text-align: center;
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+@media (max-width: 768px) {
+  .post-content figure.post-image {
+    max-width: 100%;
+  }
+}
+
+/* Caption convention used by the editor:
+   ![Caption](url)
+   _Caption_
+*/
+.post-content p:has(> img) + p > em:only-child {
+  display: block;
+  text-align: center;
+  margin-top: -0.75rem;
+  margin-bottom: 1.25rem;
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 
 .post-nav {
