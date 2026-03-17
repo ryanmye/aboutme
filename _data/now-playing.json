@@ -1,19 +1,14 @@
 {
   "track": {
-    "name": "Better Than I Know Myself",
-    "url": "https://open.spotify.com/track/5VNkuiCzqFMW37IANGQ1W7",
+    "name": "Good Good Father",
+    "url": "https://open.spotify.com/track/1mWdyqs6Zvg8b1lKjDc8yB",
     "artists": [
       {
-        "name": "Del Water Gap",
-        "url": "https://open.spotify.com/artist/0xPoVNPnxIIUS1vrxAYV00"
+        "name": "Chris Tomlin",
+        "url": "https://open.spotify.com/artist/6pRi6EIPXz4QJEOEsBaA0m"
       }
     ],
-    "played_at": "2026-03-17T01:54:51.800Z"
+    "played_at": "2026-03-17T06:34:20.486Z"
   },
-  "fetched_at": "2026-03-17T05:16:33Z",
-  "context": {
-    "type": "playlist",
-    "name": "floating",
-    "url": "https://open.spotify.com/playlist/607PxSGVeYpWMFiqtNgW6f?sessionId=1773705600002&mode=enhanced"
-  }
+  "fetched_at": "2026-03-17T06:35:49Z"
 }
