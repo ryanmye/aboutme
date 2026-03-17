@@ -1,19 +1,14 @@
 {
   "track": {
-    "name": "Something Forgotten",
-    "url": "https://open.spotify.com/track/40HevVLnudaVGcF78uLPuB",
+    "name": ".",
+    "url": "https://open.spotify.com/track/4r1AqGpB9YrXV2ivcrqfJY",
     "artists": [
       {
-        "name": "Nine Sparks Riots",
-        "url": "https://open.spotify.com/artist/4y6ORtg4fPmsXNftMLw12X"
+        "name": "girl in red",
+        "url": "https://open.spotify.com/artist/3uwAm6vQy7kWPS2bciKWx9"
       }
     ],
-    "played_at": "2026-03-17T22:27:08.117Z"
+    "played_at": "2026-03-17T22:53:53.740Z"
   },
-  "fetched_at": "2026-03-17T22:29:52Z",
-  "context": {
-    "type": "playlist",
-    "name": "in the pocket",
-    "url": "https://open.spotify.com/playlist/4rv6sUasas98iJagvsGRFi?sessionId=1773792000001&mode=enhanced"
-  }
+  "fetched_at": "2026-03-17T23:00:44Z"
 }
