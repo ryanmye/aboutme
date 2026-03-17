@@ -1,19 +1,23 @@
 {
   "track": {
-    "name": "Don't Fail Me Now",
-    "url": "https://open.spotify.com/track/6kVZLcEMeDhRqt6LHrGPd9",
+    "name": "All I Did Was Dream of You (feat. The Mar\u00edas)",
+    "url": "https://open.spotify.com/track/0qWoOHqTirzo59FQ9eoECH",
     "artists": [
       {
-        "name": "Hunter Metts",
-        "url": "https://open.spotify.com/artist/1nQp0Yk9yxk2PJsXOtMR14"
+        "name": "beabadoobee",
+        "url": "https://open.spotify.com/artist/35l9BRT7MXmM8bv2WDQiyB"
+      },
+      {
+        "name": "The Mar\u00edas",
+        "url": "https://open.spotify.com/artist/2sSGPbdZJkaSE2AbcGOACx"
       }
     ],
-    "played_at": "2026-03-16T21:57:24.840Z"
+    "played_at": "2026-03-17T01:00:37.484Z"
   },
-  "fetched_at": "2026-03-16T21:58:30Z",
+  "fetched_at": "2026-03-17T01:03:10Z",
   "context": {
     "type": "playlist",
-    "name": "fix me?",
-    "url": "https://open.spotify.com/playlist/0nk8P6RYfXRW2FF8zDFjrR?sessionId=1773705600001&mode=enhanced"
+    "name": "floating",
+    "url": "https://open.spotify.com/playlist/607PxSGVeYpWMFiqtNgW6f?sessionId=1773705600002&mode=enhanced"
   }
 }
