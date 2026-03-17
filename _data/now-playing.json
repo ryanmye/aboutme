@@ -1,14 +1,23 @@
 {
   "track": {
-    "name": "Good Good Father",
-    "url": "https://open.spotify.com/track/1mWdyqs6Zvg8b1lKjDc8yB",
+    "name": "How Long, How Low?",
+    "url": "https://open.spotify.com/track/7IGOMg3KwOqHAvvUAPXE7B",
     "artists": [
       {
-        "name": "Chris Tomlin",
-        "url": "https://open.spotify.com/artist/6pRi6EIPXz4QJEOEsBaA0m"
+        "name": "Chance Pe\u00f1a",
+        "url": "https://open.spotify.com/artist/4lhUHpVOXmkEBGGHV71QCh"
+      },
+      {
+        "name": "Hayd",
+        "url": "https://open.spotify.com/artist/1adGvsK8A0XG2D18ufk7fZ"
       }
     ],
-    "played_at": "2026-03-17T06:34:20.486Z"
+    "played_at": "2026-03-17T15:34:21.644Z"
   },
-  "fetched_at": "2026-03-17T14:11:20Z"
+  "fetched_at": "2026-03-17T15:34:57Z",
+  "context": {
+    "type": "playlist",
+    "name": "fix me?",
+    "url": "https://open.spotify.com/playlist/0nk8P6RYfXRW2FF8zDFjrR?sessionId=1773705600003&mode=enhanced"
+  }
 }
