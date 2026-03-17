@@ -1,16 +1,20 @@
 {
   "track": {
-    "name": "Skin",
-    "url": "https://open.spotify.com/track/4uqfL7UKwWPF1bpZok6zGs",
+    "name": "All I Did Was Dream of You (feat. The Mar\u00edas)",
+    "url": "https://open.spotify.com/track/0qWoOHqTirzo59FQ9eoECH",
     "artists": [
       {
-        "name": "Hans Williams",
-        "url": "https://open.spotify.com/artist/3SEkDN2vusR7CIyehzfJaj"
+        "name": "beabadoobee",
+        "url": "https://open.spotify.com/artist/35l9BRT7MXmM8bv2WDQiyB"
+      },
+      {
+        "name": "The Mar\u00edas",
+        "url": "https://open.spotify.com/artist/2sSGPbdZJkaSE2AbcGOACx"
       }
     ],
-    "played_at": "2026-03-16T22:56:40.103Z"
+    "played_at": "2026-03-17T01:00:37.484Z"
   },
-  "fetched_at": "2026-03-16T23:48:10Z",
+  "fetched_at": "2026-03-17T01:03:10Z",
   "context": {
     "type": "playlist",
     "name": "floating",
