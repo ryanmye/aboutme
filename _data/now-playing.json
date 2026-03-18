@@ -1,16 +1,16 @@
 {
   "track": {
-    "name": "would've been you",
-    "url": "https://open.spotify.com/track/2U7svZUGvR4tfKdyxv9mXu",
+    "name": "Georgia Walks",
+    "url": "https://open.spotify.com/track/46ewa3Cu9oEqxNnh0LRWxs",
     "artists": [
       {
-        "name": "sombr",
-        "url": "https://open.spotify.com/artist/4G9NDjRyZFDlJKMRL8hx3S"
+        "name": "Hans Williams",
+        "url": "https://open.spotify.com/artist/3SEkDN2vusR7CIyehzfJaj"
       }
     ],
-    "played_at": "2026-03-18T21:54:25.871Z"
+    "played_at": "2026-03-18T22:15:51.853Z"
   },
-  "fetched_at": "2026-03-18T21:54:31Z",
+  "fetched_at": "2026-03-18T22:21:14Z",
   "context": {
     "type": "playlist",
     "name": "floating",
