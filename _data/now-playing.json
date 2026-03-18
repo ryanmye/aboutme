@@ -1,19 +1,14 @@
 {
   "track": {
-    "name": "Rush",
-    "url": "https://open.spotify.com/track/2PXnV9PBUGW4v5u6WJpCjG",
+    "name": "Katawaredoki",
+    "url": "https://open.spotify.com/track/4WedBZTeFawYCBCgfj36iK",
     "artists": [
       {
-        "name": "SEATBELTS",
-        "url": "https://open.spotify.com/artist/3U3zr5PCRa9ty74uN46iBa"
+        "name": "RADWIMPS",
+        "url": "https://open.spotify.com/artist/1EowJ1WwkMzkCkRomFhui7"
       }
     ],
-    "played_at": "2026-03-18T23:17:01.599Z"
+    "played_at": "2026-03-18T23:46:47.911Z"
   },
-  "fetched_at": "2026-03-18T23:20:45Z",
-  "context": {
-    "type": "playlist",
-    "name": "Jazz Noir Cowboy Bebop Vibes",
-    "url": "https://open.spotify.com/playlist/5q5wQFuwmyEBhX6U8ng4K2"
-  }
+  "fetched_at": "2026-03-18T23:48:38Z"
 }
