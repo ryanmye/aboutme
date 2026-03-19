@@ -1,16 +1,16 @@
 {
   "track": {
-    "name": "Sweet",
-    "url": "https://open.spotify.com/track/2KhrPRV0V1FS2l4eQMJUWt",
+    "name": "still love you (todav\u00eda)",
+    "url": "https://open.spotify.com/track/0gmKvcuqpmLqEXFE3bRxtc",
     "artists": [
       {
-        "name": "Cigarettes After Sex",
-        "url": "https://open.spotify.com/artist/1QAJqy2dA3ihHBFIHRphZj"
+        "name": "The Two Lips",
+        "url": "https://open.spotify.com/artist/0jtiZkDcuWRf647co8id50"
       }
     ],
-    "played_at": "2026-03-19T05:01:58.550Z"
+    "played_at": "2026-03-19T12:57:23.222Z"
   },
-  "fetched_at": "2026-03-19T12:34:35Z",
+  "fetched_at": "2026-03-19T14:00:46Z",
   "context": {
     "type": "playlist",
     "name": "floating",
