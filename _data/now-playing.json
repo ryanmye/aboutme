@@ -1,16 +1,20 @@
 {
   "track": {
-    "name": "Home Of My Tomorrow",
-    "url": "https://open.spotify.com/track/01PueBjWRvJTwWwuClGbEp",
+    "name": "Prisoner Of Love",
+    "url": "https://open.spotify.com/track/6lO3wImM4oMAhOzDptCqa6",
     "artists": [
       {
-        "name": "Clover Post",
-        "url": "https://open.spotify.com/artist/2XWP1prJQm6CLoHKAqXCEz"
+        "name": "Coleman Hawkins",
+        "url": "https://open.spotify.com/artist/0JM134st8VY7Ld9T2wQiH0"
+      },
+      {
+        "name": "Ben Webster",
+        "url": "https://open.spotify.com/artist/34W7ZCX0LZeJd8q6boKGOk"
       }
     ],
-    "played_at": "2026-03-20T06:07:08.022Z"
+    "played_at": "2026-03-20T07:22:20.810Z"
   },
-  "fetched_at": "2026-03-20T06:09:18Z",
+  "fetched_at": "2026-03-20T07:27:02Z",
   "context": {
     "type": "playlist",
     "name": "Jazz Noir Cowboy Bebop Vibes",
