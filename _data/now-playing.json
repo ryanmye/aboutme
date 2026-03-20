@@ -1,19 +1,19 @@
 {
   "track": {
-    "name": "we never dated",
-    "url": "https://open.spotify.com/track/0t1fdMrn7JOg9DDsT95bxt",
+    "name": "Heaven (Butterflies)",
+    "url": "https://open.spotify.com/track/2O9bYhoUhCOVvwRoaFSFje",
     "artists": [
       {
-        "name": "sombr",
-        "url": "https://open.spotify.com/artist/4G9NDjRyZFDlJKMRL8hx3S"
+        "name": "Jacob Collier",
+        "url": "https://open.spotify.com/artist/0QWrMNukfcVOmgEU0FEDyD"
       }
     ],
-    "played_at": "2026-03-20T20:51:43.591Z"
+    "played_at": "2026-03-20T21:15:53.080Z"
   },
-  "fetched_at": "2026-03-20T20:54:04Z",
+  "fetched_at": "2026-03-20T21:19:17Z",
   "context": {
     "type": "playlist",
-    "name": "floating",
-    "url": "https://open.spotify.com/playlist/607PxSGVeYpWMFiqtNgW6f?sessionId=1774051200001&mode=enhanced"
+    "name": "48+2",
+    "url": "https://open.spotify.com/playlist/7LLzYjy61NJL9A3yvizXqv?sessionId=1774051200002&mode=enhanced"
   }
 }
