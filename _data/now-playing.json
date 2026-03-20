@@ -1,16 +1,16 @@
 {
   "track": {
-    "name": "jazz is for ordinary people",
-    "url": "https://open.spotify.com/track/06SYfhYSo9iY3txHE6W9Dl",
+    "name": "A Foggy Day",
+    "url": "https://open.spotify.com/track/31sgA9RhIPIKf0QAhjnHbi",
     "artists": [
       {
-        "name": "berlioz",
-        "url": "https://open.spotify.com/artist/3k3RY7kR8f0vp8Cq27P141"
+        "name": "Oscar Peterson",
+        "url": "https://open.spotify.com/artist/6zkX5fhrSD4tdVOmimR9wB"
       }
     ],
-    "played_at": "2026-03-20T15:30:24.884Z"
+    "played_at": "2026-03-20T16:18:43.733Z"
   },
-  "fetched_at": "2026-03-20T15:32:24Z",
+  "fetched_at": "2026-03-20T16:29:29Z",
   "context": {
     "type": "playlist",
     "name": "Jazz Noir Cowboy Bebop Vibes",
