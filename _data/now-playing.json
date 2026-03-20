@@ -1,16 +1,16 @@
 {
   "track": {
-    "name": "Pines",
-    "url": "https://open.spotify.com/track/7qFLFQOYcytDd4hejiREzk",
+    "name": "Sailor Song",
+    "url": "https://open.spotify.com/track/2262bWmqomIaJXwCRHr13j",
     "artists": [
       {
-        "name": "Men I Trust",
-        "url": "https://open.spotify.com/artist/3zmfs9cQwzJl575W1ZYXeT"
+        "name": "Gigi Perez",
+        "url": "https://open.spotify.com/artist/1iCnM8foFssWlPRLfAbIwo"
       }
     ],
-    "played_at": "2026-03-20T17:07:54.234Z"
+    "played_at": "2026-03-20T17:55:09.312Z"
   },
-  "fetched_at": "2026-03-20T17:09:09Z",
+  "fetched_at": "2026-03-20T17:57:02Z",
   "context": {
     "type": "playlist",
     "name": "floating",
