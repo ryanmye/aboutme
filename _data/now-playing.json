@@ -1,19 +1,14 @@
 {
   "track": {
-    "name": "When we danced",
-    "url": "https://open.spotify.com/track/2pcDGklI3mOVMZrvnUF2t5",
+    "name": "See You Space Cowboys Not Final Mountain Root",
+    "url": "https://open.spotify.com/track/2FbN3Cmy6OMvI5DWpwFouB",
     "artists": [
       {
-        "name": "Annie Berenson",
-        "url": "https://open.spotify.com/artist/1R3a9JWK2lSTjSr2Dw9Qay"
+        "name": "Mai Yamane",
+        "url": "https://open.spotify.com/artist/2jakCNqkEhdRND7btwoFOj"
       }
     ],
-    "played_at": "2026-03-21T19:38:17.624Z"
+    "played_at": "2026-03-21T20:09:22.662Z"
   },
-  "fetched_at": "2026-03-21T19:42:28Z",
-  "context": {
-    "type": "playlist",
-    "name": "Jazz Noir Cowboy Bebop Vibes",
-    "url": "https://open.spotify.com/playlist/5q5wQFuwmyEBhX6U8ng4K2"
-  }
+  "fetched_at": "2026-03-21T20:13:03Z"
 }
