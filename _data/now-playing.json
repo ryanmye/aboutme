@@ -1,19 +1,19 @@
 {
   "track": {
-    "name": "Beanie",
-    "url": "https://open.spotify.com/track/5e0b9LgOfi3aJSKXFcOWRe",
+    "name": "Window",
+    "url": "https://open.spotify.com/track/3i8x5ahMrS64sSLjMKST5l",
     "artists": [
       {
-        "name": "Chezile",
-        "url": "https://open.spotify.com/artist/1EmdfupUQDpXOcb4Nj2mBH"
+        "name": "flipturn",
+        "url": "https://open.spotify.com/artist/7FKTg75ADVMZgY3P9ZMRtH"
       }
     ],
-    "played_at": "2026-03-21T18:19:01.108Z"
+    "played_at": "2026-03-21T18:45:42.237Z"
   },
-  "fetched_at": "2026-03-21T18:19:34Z",
+  "fetched_at": "2026-03-21T18:57:32Z",
   "context": {
     "type": "playlist",
-    "name": "48+2",
-    "url": "https://open.spotify.com/playlist/7LLzYjy61NJL9A3yvizXqv?sessionId=1774051200002&mode=enhanced"
+    "name": "floating",
+    "url": "https://open.spotify.com/playlist/607PxSGVeYpWMFiqtNgW6f?sessionId=1774137600001&mode=enhanced"
   }
 }
