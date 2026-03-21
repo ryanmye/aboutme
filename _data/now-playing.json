@@ -1,16 +1,16 @@
 {
   "track": {
-    "name": "Georgia",
-    "url": "https://open.spotify.com/track/5sfvzgf96i6nLyLELnrLZ6",
+    "name": "Beanie",
+    "url": "https://open.spotify.com/track/5e0b9LgOfi3aJSKXFcOWRe",
     "artists": [
       {
-        "name": "Vance Joy",
-        "url": "https://open.spotify.com/artist/10exVja0key0uqUkk6LJRT"
+        "name": "Chezile",
+        "url": "https://open.spotify.com/artist/1EmdfupUQDpXOcb4Nj2mBH"
       }
     ],
-    "played_at": "2026-03-21T17:42:41.187Z"
+    "played_at": "2026-03-21T18:19:01.108Z"
   },
-  "fetched_at": "2026-03-21T17:46:29Z",
+  "fetched_at": "2026-03-21T18:19:34Z",
   "context": {
     "type": "playlist",
     "name": "48+2",
