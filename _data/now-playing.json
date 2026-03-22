@@ -1,23 +1,19 @@
 {
   "track": {
-    "name": "All Hail King Jesus (Live)",
-    "url": "https://open.spotify.com/track/0dr0OZdQlpGhQizJSm0gMr",
+    "name": "Numb",
+    "url": "https://open.spotify.com/track/6Ijmj8Z0L31hCp5pLZnT5U",
     "artists": [
       {
-        "name": "Bethel Music",
-        "url": "https://open.spotify.com/artist/26T4yOaOoFJvUvxR87Y9HO"
-      },
-      {
-        "name": "Bethany Wohrle",
-        "url": "https://open.spotify.com/artist/26opZlzcsx1NhaN5QELG4e"
+        "name": "Men I Trust",
+        "url": "https://open.spotify.com/artist/3zmfs9cQwzJl575W1ZYXeT"
       }
     ],
-    "played_at": "2026-03-22T21:38:52.795Z"
+    "played_at": "2026-03-22T22:10:47.565Z"
   },
-  "fetched_at": "2026-03-22T21:45:41Z",
+  "fetched_at": "2026-03-22T22:13:21Z",
   "context": {
     "type": "playlist",
-    "name": "surrender my life",
-    "url": "https://open.spotify.com/playlist/1eQ5bBxjfhMjB797PyQmgq"
+    "name": "floating",
+    "url": "https://open.spotify.com/playlist/607PxSGVeYpWMFiqtNgW6f?sessionId=1774224000001&mode=enhanced"
   }
 }
