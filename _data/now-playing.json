@@ -1,19 +1,18 @@
 {
   "track": {
-    "name": "Sailor Song",
-    "url": "https://open.spotify.com/track/2262bWmqomIaJXwCRHr13j",
+    "name": "Solitude",
+    "url": "https://open.spotify.com/track/1Ukp5g1LebPFr7iKFJExUI",
     "artists": [
       {
-        "name": "Gigi Perez",
-        "url": "https://open.spotify.com/artist/1iCnM8foFssWlPRLfAbIwo"
+        "name": "The Jazz Seekers",
+        "url": "https://open.spotify.com/artist/1K6IcbnI4HSwAjecks1vG1"
+      },
+      {
+        "name": "Niclas Knudsen",
+        "url": "https://open.spotify.com/artist/7ErSwiH3ISJy905okfPJU5"
       }
     ],
-    "played_at": "2026-03-21T22:32:41.459Z"
+    "played_at": "2026-03-22T06:13:26.526Z"
   },
-  "fetched_at": "2026-03-22T06:09:34Z",
-  "context": {
-    "type": "playlist",
-    "name": "floating",
-    "url": "https://open.spotify.com/playlist/607PxSGVeYpWMFiqtNgW6f?sessionId=1774137600001&mode=enhanced"
-  }
+  "fetched_at": "2026-03-22T07:11:28Z"
 }
