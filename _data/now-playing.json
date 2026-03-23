@@ -1,16 +1,16 @@
 {
   "track": {
-    "name": "Seven",
-    "url": "https://open.spotify.com/track/5QvditjxADt1HMKPgaMjJm",
+    "name": "Slow Dance",
+    "url": "https://open.spotify.com/track/2qmmnbJ9JR3f7vofbyje5r",
     "artists": [
       {
-        "name": "Men I Trust",
-        "url": "https://open.spotify.com/artist/3zmfs9cQwzJl575W1ZYXeT"
+        "name": "Clairo",
+        "url": "https://open.spotify.com/artist/3l0CmX0FuQjFxr8SK7Vqag"
       }
     ],
-    "played_at": "2026-03-23T15:30:58.969Z"
+    "played_at": "2026-03-23T16:28:06.827Z"
   },
-  "fetched_at": "2026-03-23T15:31:53Z",
+  "fetched_at": "2026-03-23T16:43:27Z",
   "context": {
     "type": "playlist",
     "name": "floating",
