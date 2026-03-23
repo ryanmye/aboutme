@@ -1,16 +1,28 @@
 {
   "track": {
-    "name": "Thank You Jesus for the Blood",
-    "url": "https://open.spotify.com/track/60sFQOzyCYMNkVs0CPBnxy",
+    "name": "Rest on Us (feat. Brandon Lake & Eniola Abioye)",
+    "url": "https://open.spotify.com/track/0A402ZdxwQzaVdyH5Zav5X",
     "artists": [
       {
-        "name": "Charity Gayle",
-        "url": "https://open.spotify.com/artist/57YsESW6BGZLHQgOg8AiAq"
+        "name": "Maverick City Music",
+        "url": "https://open.spotify.com/artist/58r1rB5t3VF5X6yXGPequV"
+      },
+      {
+        "name": "UPPERROOM",
+        "url": "https://open.spotify.com/artist/107CG0UhUl9GJnPwF83N63"
+      },
+      {
+        "name": "Brandon Lake",
+        "url": "https://open.spotify.com/artist/1bdnGJxkbIIys5Jhk1T74v"
+      },
+      {
+        "name": "Eniola Abioye",
+        "url": "https://open.spotify.com/artist/0vUp0HrA2d7mcExuf5Wbo6"
       }
     ],
-    "played_at": "2026-03-23T21:00:07.127Z"
+    "played_at": "2026-03-23T21:48:51.467Z"
   },
-  "fetched_at": "2026-03-23T21:00:20Z",
+  "fetched_at": "2026-03-23T21:53:24Z",
   "context": {
     "type": "playlist",
     "name": "surrender my life",
