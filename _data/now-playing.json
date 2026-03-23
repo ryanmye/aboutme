@@ -1,19 +1,23 @@
 {
   "track": {
-    "name": "Slow Dance",
-    "url": "https://open.spotify.com/track/2qmmnbJ9JR3f7vofbyje5r",
+    "name": "Pontiac",
+    "url": "https://open.spotify.com/track/4LoL7Rkeq3kJALalToGWZY",
     "artists": [
       {
-        "name": "Clairo",
-        "url": "https://open.spotify.com/artist/3l0CmX0FuQjFxr8SK7Vqag"
+        "name": "Huntertones",
+        "url": "https://open.spotify.com/artist/3tv8xMO0AkcqN9Th8KHyGd"
+      },
+      {
+        "name": "Cory Wong",
+        "url": "https://open.spotify.com/artist/6xt9sJmmyYwWkJv8A6ssiU"
       }
     ],
-    "played_at": "2026-03-23T22:16:53.035Z"
+    "played_at": "2026-03-23T22:55:11.548Z"
   },
-  "fetched_at": "2026-03-23T22:19:06Z",
+  "fetched_at": "2026-03-23T22:56:12Z",
   "context": {
     "type": "playlist",
-    "name": "floating",
-    "url": "https://open.spotify.com/playlist/607PxSGVeYpWMFiqtNgW6f?sessionId=1774310400001&mode=enhanced"
+    "name": "in the pocket",
+    "url": "https://open.spotify.com/playlist/4rv6sUasas98iJagvsGRFi?sessionId=1774310400001&mode=enhanced"
   }
 }
