@@ -1,20 +1,16 @@
 {
   "track": {
-    "name": "Shalom",
-    "url": "https://open.spotify.com/track/5Y541zDlYYsnUYtQfOdYsB",
+    "name": "Eze Ebube II",
+    "url": "https://open.spotify.com/track/5VqbyQDOlTs9CwYnDOfpRh",
     "artists": [
       {
-        "name": "Bridge Worship",
-        "url": "https://open.spotify.com/artist/3VJPZ0Lo0RreJboEogQsnK"
-      },
-      {
-        "name": "Setnick Sene",
-        "url": "https://open.spotify.com/artist/1GWPXgfWARCEHj1unNonAE"
+        "name": "Neon Adejo",
+        "url": "https://open.spotify.com/artist/1Ywypkj7wYHenVdKnsp3Nn"
       }
     ],
-    "played_at": "2026-03-24T14:07:01.305Z"
+    "played_at": "2026-03-24T15:31:53.325Z"
   },
-  "fetched_at": "2026-03-24T14:10:45Z",
+  "fetched_at": "2026-03-24T15:38:07Z",
   "context": {
     "type": "playlist",
     "name": "Live Christian music\ud83d\ude0d",
