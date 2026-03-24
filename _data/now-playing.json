@@ -1,16 +1,20 @@
 {
   "track": {
-    "name": "Eze Ebube II",
-    "url": "https://open.spotify.com/track/5VqbyQDOlTs9CwYnDOfpRh",
+    "name": "Slower I Go - Live",
+    "url": "https://open.spotify.com/track/2MTNxj0W4s61yJMkdVhICR",
     "artists": [
       {
-        "name": "Neon Adejo",
-        "url": "https://open.spotify.com/artist/1Ywypkj7wYHenVdKnsp3Nn"
+        "name": "SEU Worship",
+        "url": "https://open.spotify.com/artist/7M7UXUwtz3Wb25PVS8dwHs"
+      },
+      {
+        "name": "Chelsea Plank",
+        "url": "https://open.spotify.com/artist/2rZyX9csPrIfGn1E7iSF7y"
       }
     ],
-    "played_at": "2026-03-24T20:24:04.283Z"
+    "played_at": "2026-03-24T20:57:07.879Z"
   },
-  "fetched_at": "2026-03-24T20:29:33Z",
+  "fetched_at": "2026-03-24T21:04:18Z",
   "context": {
     "type": "playlist",
     "name": "surrender my life",
