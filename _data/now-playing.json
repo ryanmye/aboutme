@@ -1,16 +1,16 @@
 {
   "track": {
-    "name": "would've been you",
-    "url": "https://open.spotify.com/track/2U7svZUGvR4tfKdyxv9mXu",
+    "name": "Window",
+    "url": "https://open.spotify.com/track/3i8x5ahMrS64sSLjMKST5l",
     "artists": [
       {
-        "name": "sombr",
-        "url": "https://open.spotify.com/artist/4G9NDjRyZFDlJKMRL8hx3S"
+        "name": "flipturn",
+        "url": "https://open.spotify.com/artist/7FKTg75ADVMZgY3P9ZMRtH"
       }
     ],
-    "played_at": "2026-03-25T04:49:19.386Z"
+    "played_at": "2026-03-25T05:53:50.123Z"
   },
-  "fetched_at": "2026-03-25T05:18:37Z",
+  "fetched_at": "2026-03-25T06:36:10Z",
   "context": {
     "type": "playlist",
     "name": "floating",
