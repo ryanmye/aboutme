@@ -1,23 +1,19 @@
 {
   "track": {
-    "name": "Hardtop",
-    "url": "https://open.spotify.com/track/1dlYJGQdVWDuT5sfdONqw3",
+    "name": "would've been you",
+    "url": "https://open.spotify.com/track/2U7svZUGvR4tfKdyxv9mXu",
     "artists": [
       {
-        "name": "Cory Wong",
-        "url": "https://open.spotify.com/artist/6xt9sJmmyYwWkJv8A6ssiU"
-      },
-      {
-        "name": "Dirty Loops",
-        "url": "https://open.spotify.com/artist/5Apl0wL4OwNUDYkx69rMDQ"
+        "name": "sombr",
+        "url": "https://open.spotify.com/artist/4G9NDjRyZFDlJKMRL8hx3S"
       }
     ],
-    "played_at": "2026-03-25T02:43:16.708Z"
+    "played_at": "2026-03-25T04:49:19.386Z"
   },
-  "fetched_at": "2026-03-25T03:55:13Z",
+  "fetched_at": "2026-03-25T05:18:37Z",
   "context": {
     "type": "playlist",
-    "name": "in the pocket",
-    "url": "https://open.spotify.com/playlist/4rv6sUasas98iJagvsGRFi?sessionId=1774396800002&mode=enhanced"
+    "name": "floating",
+    "url": "https://open.spotify.com/playlist/607PxSGVeYpWMFiqtNgW6f?sessionId=1774396800003&mode=enhanced"
   }
 }
