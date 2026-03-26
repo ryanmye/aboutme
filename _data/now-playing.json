@@ -1,19 +1,19 @@
 {
   "track": {
-    "name": "My Soul (\u96fb\u8996\u5287\u300a\u8b8a\u6210\u4f60\u7684\u90a3\u4e00\u5929\u300b\u7247\u5c3e\u66f2)",
-    "url": "https://open.spotify.com/track/0oBs2VlC7TcoTzRb5vokal",
+    "name": "\u592a\u967d\u4e4b\u5b50",
+    "url": "https://open.spotify.com/track/64Odl9Q0nrMjUlCfmBZKCp",
     "artists": [
       {
-        "name": "\u5f35\u65b0\u6210",
-        "url": "https://open.spotify.com/artist/5yBT7pNCp6hZFfb80OVCak"
+        "name": "Jay Chou",
+        "url": "https://open.spotify.com/artist/2elBjNSdBE2Y3f0j1mjrql"
       }
     ],
-    "played_at": "2026-03-26T17:49:03.387Z"
+    "played_at": "2026-03-26T22:48:31.779Z"
   },
-  "fetched_at": "2026-03-26T22:16:03Z",
+  "fetched_at": "2026-03-26T22:53:14Z",
   "context": {
-    "type": "playlist",
-    "name": "\u7535\u89c6\u5267OST",
-    "url": "https://open.spotify.com/playlist/4QpWohOrdEAp6ScO59ZSI4"
+    "type": "album",
+    "name": "\u592a\u967d\u4e4b\u5b50",
+    "url": "https://open.spotify.com/album/5gDJVilnZpPt8zwBC467UH"
   }
 }
