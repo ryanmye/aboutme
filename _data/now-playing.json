@@ -1,19 +1,14 @@
 {
   "track": {
-    "name": "Sexy to Someone",
-    "url": "https://open.spotify.com/track/3awweDjWIuXNMogMClJnvE",
+    "name": "Sleepless in a Hotel Room",
+    "url": "https://open.spotify.com/track/2za9t2qpWyUpIhnJcwopPt",
     "artists": [
       {
-        "name": "Clairo",
-        "url": "https://open.spotify.com/artist/3l0CmX0FuQjFxr8SK7Vqag"
+        "name": "Luke Combs",
+        "url": "https://open.spotify.com/artist/718COspgdWOnwOFpJHRZHS"
       }
     ],
-    "played_at": "2026-03-27T22:11:18.026Z"
+    "played_at": "2026-03-27T22:44:03.720Z"
   },
-  "fetched_at": "2026-03-27T22:19:38Z",
-  "context": {
-    "type": "playlist",
-    "name": "floating",
-    "url": "https://open.spotify.com/playlist/607PxSGVeYpWMFiqtNgW6f?sessionId=1774656000002&mode=enhanced"
-  }
+  "fetched_at": "2026-03-27T22:57:05Z"
 }
