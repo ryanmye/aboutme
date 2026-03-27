@@ -1,23 +1,19 @@
 {
   "track": {
-    "name": "I Surrender",
-    "url": "https://open.spotify.com/track/5x19XFteoRNZvEh0bHJHtn",
+    "name": "My Love Mine All Mine",
+    "url": "https://open.spotify.com/track/3vkCueOmm7xQDoJ17W1Pm3",
     "artists": [
       {
-        "name": "Hillsong Worship",
-        "url": "https://open.spotify.com/artist/3SgHzT552wy2W8pNLaLk24"
-      },
-      {
-        "name": "TAYA",
-        "url": "https://open.spotify.com/artist/3D04fb59z3ANxVaeHBfxtW"
+        "name": "Mitski",
+        "url": "https://open.spotify.com/artist/2uYWxilOVlUdk4oV9DvwqK"
       }
     ],
-    "played_at": "2026-03-27T17:05:35.194Z"
+    "played_at": "2026-03-27T21:00:27.680Z"
   },
-  "fetched_at": "2026-03-27T20:24:12Z",
+  "fetched_at": "2026-03-27T21:01:20Z",
   "context": {
     "type": "playlist",
-    "name": "surrender my life",
-    "url": "https://open.spotify.com/playlist/1eQ5bBxjfhMjB797PyQmgq?sessionId=1774656000001&mode=enhanced"
+    "name": "floating",
+    "url": "https://open.spotify.com/playlist/607PxSGVeYpWMFiqtNgW6f?sessionId=1774656000001&mode=enhanced"
   }
 }
