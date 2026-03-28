@@ -1,14 +1,23 @@
 {
   "track": {
-    "name": "Sleepless in a Hotel Room",
-    "url": "https://open.spotify.com/track/2za9t2qpWyUpIhnJcwopPt",
+    "name": "Pr\u00e9cis Two",
+    "url": "https://open.spotify.com/track/5LiO40bi3foQNkIDg4PlGV",
     "artists": [
       {
-        "name": "Luke Combs",
-        "url": "https://open.spotify.com/artist/718COspgdWOnwOFpJHRZHS"
+        "name": "Vansire",
+        "url": "https://open.spotify.com/artist/6ft7JnxMyZhp7N52qzHymY"
+      },
+      {
+        "name": "Ivy Sole",
+        "url": "https://open.spotify.com/artist/4NcMrSi3B8eUVy6e1Ni3wu"
       }
     ],
-    "played_at": "2026-03-27T22:44:03.720Z"
+    "played_at": "2026-03-28T15:15:55.026Z"
   },
-  "fetched_at": "2026-03-28T14:55:26Z"
+  "fetched_at": "2026-03-28T15:19:26Z",
+  "context": {
+    "type": "playlist",
+    "name": "floating",
+    "url": "https://open.spotify.com/playlist/607PxSGVeYpWMFiqtNgW6f?sessionId=1774656000002&mode=enhanced"
+  }
 }
