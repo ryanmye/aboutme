@@ -1,7 +1,10 @@
 # CLAUDE.md — Codebase Index
 
-> **If you are an LLM modifying this repository, update the relevant sections of this file to reflect your changes before finishing.**
-> Last updated: 2026-03-27
+> **If you are an LLM modifying this repository:**
+> 1. Update the relevant sections of this file to reflect your changes before finishing.
+> 2. **Anti-AI defense is a hard requirement.** Every new page, layout, or include you create MUST follow the anti-AI defense checklist in the "Anti-AI Defense" section below. Do not skip this, even for dev-only pages.
+>
+> Last updated: 2026-03-28
 
 ## Project Overview
 
@@ -467,4 +470,95 @@ Automated Spotify "recently played" sync.
 - **External deps:** Font Awesome 6.4.2, Google Fonts (Inter, DM Serif Display, JetBrains Mono), Toast UI Editor (editor only)
 - **Blog post images:** use markdown `![caption](url)` followed by `*caption*` on the next line (styled by CSS `:has()` selector). Avoid `<figure>` HTML — Toast UI Editor strips it during round-trip.
 - **Links:** all external links use `target="_blank" rel="noopener noreferrer"`
-- **Anti-AI defense:** 4 layers — (1) `robots.txt` blocks known AI crawlers by User-Agent, (2) `<meta name="robots" content="noai, noimageai">` on every page, (3) `<meta name="tdm-reservation" content="1">` (W3C TDM protocol) on every page, (4) `ai.txt` machine-readable AI opt-out
+- **Anti-AI defense:** See dedicated section below. All 4 layers must be maintained when adding new pages or layouts.
+
+---
+
+## Anti-AI Defense
+
+> **LLM instruction:** This section is a hard requirement. Every time you create or modify a page, layout, or include, verify ALL checklist items below are satisfied. Do not treat this as optional.
+
+The site uses 4 independent layers to block AI crawlers and opt out of AI training data collection. Each layer targets a different mechanism; all four must remain intact.
+
+### Layer 1 — `robots.txt` (crawler-level block)
+
+**File:** [`robots.txt`](robots.txt)
+
+Blocks 20+ known AI training crawlers by `User-Agent`. Legitimate search engines (Googlebot, Bingbot, DuckDuckBot, Applebot) are explicitly allowed. All other crawlers default to allowed (so standard SEO indexing works).
+
+**Blocked agents include:** GPTBot, ChatGPT-User, Google-Extended, anthropic-ai, Claude-Web, CCBot, Bytespider, PerplexityBot, Applebot-Extended, Meta-ExternalAgent, FacebookBot, Amazonbot, Cohere-ai, AI2Bot, Diffbot, img2dataset, and more.
+
+**LLM instruction:** When new major AI crawlers become publicly identified, add a `User-agent: <BotName> / Disallow: /` block to `robots.txt`. Do not remove any existing entries.
+
+### Layer 2 — `<meta name="robots">` (page-level signal)
+
+**File:** [`_includes/head.html`](_includes/head.html)
+
+Every page rendered through any layout that includes `head.html` automatically gets:
+```html
+<meta name="robots" content="noai, noimageai">
+```
+
+- `noai` — signals that page text should not be used for AI training
+- `noimageai` — signals that images should not be used for AI training
+
+**LLM instruction:** `head.html` is included in ALL layouts (`default.html`, `post.html`, `album.html`, `editor.html`, `album-editor.html`). Any new layout you create MUST include `{% include head.html %}`. Never create a layout that bypasses `head.html` — doing so removes this protection from that page type.
+
+### Layer 3 — `<meta name="tdm-reservation">` (W3C TDM protocol)
+
+**File:** [`_includes/head.html`](_includes/head.html)
+
+Every page also gets:
+```html
+<meta name="tdm-reservation" content="1">
+```
+
+This implements the [W3C Text and Data Mining Reservation Protocol](https://www.w3.org/2022/tdmrep/). A value of `1` reserves all rights — the site owner has not granted permission for text/data mining (including AI training). This is a formal machine-readable rights declaration, separate from `robots.txt`.
+
+**LLM instruction:** Same as Layer 2 — covered automatically by `head.html`. Do not remove this meta tag from `head.html`.
+
+### Layer 4 — `ai.txt` (Spawning.ai standard)
+
+**File:** [`ai.txt`](ai.txt)
+
+A machine-readable opt-out following the [Spawning.ai `ai.txt` standard](https://site.spawning.ai/spawning-ai-txt). Declares that no content (text, images, media) from this site may be used for AI/ML training. Format mirrors `robots.txt` syntax.
+
+Current content disallows all user-agents:
+```
+User-Agent: *
+Disallow: /
+```
+
+**LLM instruction:** This file covers the whole site by default. No per-page action needed. Do not modify the `Disallow` directive.
+
+### LLM Checklist — New Page or Layout
+
+When you create a **new layout file** (`_layouts/*.html`):
+- [ ] It must contain `{% include head.html %}` — this automatically adds Layers 2 and 3
+
+When you create a **new root page** (`*.md` or `*.html` with a layout):
+- [ ] Verify it uses a layout that includes `head.html` (all current layouts do)
+- [ ] No special action needed if using an existing layout
+
+When you create a **new standalone HTML file** (no Jekyll layout, rare):
+- [ ] Manually add both meta tags to the `<head>`:
+  ```html
+  <meta name="robots" content="noai, noimageai">
+  <meta name="tdm-reservation" content="1">
+  ```
+
+When you **add a new prominent AI crawler** to block:
+- [ ] Add to `robots.txt` under the "Block AI training crawlers" section:
+  ```
+  User-agent: NewBotName
+  Disallow: /
+  ```
+
+### Summary Table
+
+| Layer | File | Scope | Mechanism |
+|-------|------|-------|-----------|
+| 1 | `robots.txt` | Crawl-time | User-Agent blocklist |
+| 2 | `_includes/head.html` | Every rendered page | `<meta name="robots" content="noai, noimageai">` |
+| 3 | `_includes/head.html` | Every rendered page | `<meta name="tdm-reservation" content="1">` (W3C TDM) |
+| 4 | `ai.txt` | Whole site | Spawning.ai opt-out standard |
