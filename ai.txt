@@ -1,0 +1,10 @@
+# ai.txt — AI Usage Policy
+# Reference: https://site.spawning.ai/spawning-ai-txt
+# This file declares the site owner's preferences regarding AI training.
+
+User-Agent: *
+Disallow: /
+
+# Preference: No AI training on any content from this site.
+# No text, images, or other media from this site may be used
+# for training artificial intelligence or machine learning models.

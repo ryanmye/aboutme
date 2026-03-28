@@ -35,6 +35,8 @@ bundle exec jekyll build --config _config.yml,_config_prod.yml
 ├── Gemfile                  # Ruby deps: jekyll 3.8, sinatra, kramdown-parser-gfm
 ├── .gitignore
 ├── CLAUDE.md                # This file (excluded from Jekyll build)
+├── robots.txt               # Anti-AI crawler rules (blocks GPTBot, CCBot, etc.)
+├── ai.txt                   # Machine-readable AI opt-out (Spawning.ai standard)
 │
 ├── _layouts/
 │   ├── default.html         # Base layout (head + navbar + footer + theme.js)
@@ -137,9 +139,10 @@ Local editor layout. Loads Toast UI Editor CSS/JS. Contains: post title input, d
 
 ## Includes
 
-### _includes/head.html (26 lines)
+### _includes/head.html (30 lines)
 HTML `<head>` contents:
 - Meta: charset, viewport, dynamic title, description (excerpt truncated to 160 chars), author
+- Anti-AI/crawler: `<meta name="robots" content="noai, noimageai">`, `<meta name="tdm-reservation" content="1">`
 - Open Graph: type ("article" for posts, "website" otherwise), URL, title, description
 - CSS: preloads `styles.css` with cache-busting timestamp
 - Fonts: Google Fonts preconnect, loads Inter, DM Serif Display, JetBrains Mono
@@ -464,3 +467,4 @@ Automated Spotify "recently played" sync.
 - **External deps:** Font Awesome 6.4.2, Google Fonts (Inter, DM Serif Display, JetBrains Mono), Toast UI Editor (editor only)
 - **Blog post images:** use markdown `![caption](url)` followed by `*caption*` on the next line (styled by CSS `:has()` selector). Avoid `<figure>` HTML — Toast UI Editor strips it during round-trip.
 - **Links:** all external links use `target="_blank" rel="noopener noreferrer"`
+- **Anti-AI defense:** 4 layers — (1) `robots.txt` blocks known AI crawlers by User-Agent, (2) `<meta name="robots" content="noai, noimageai">` on every page, (3) `<meta name="tdm-reservation" content="1">` (W3C TDM protocol) on every page, (4) `ai.txt` machine-readable AI opt-out

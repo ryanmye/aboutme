@@ -24,3 +24,4 @@ Thumbs.db
 _drafts/
 assets/images/drafts/
 _editor_tmp/
+.bundle/
