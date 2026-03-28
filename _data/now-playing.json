@@ -1,19 +1,14 @@
 {
   "track": {
-    "name": "Better Than I Know Myself",
-    "url": "https://open.spotify.com/track/5VNkuiCzqFMW37IANGQ1W7",
+    "name": "Sleepless in a Hotel Room",
+    "url": "https://open.spotify.com/track/2za9t2qpWyUpIhnJcwopPt",
     "artists": [
       {
-        "name": "Del Water Gap",
-        "url": "https://open.spotify.com/artist/0xPoVNPnxIIUS1vrxAYV00"
+        "name": "Luke Combs",
+        "url": "https://open.spotify.com/artist/718COspgdWOnwOFpJHRZHS"
       }
     ],
-    "played_at": "2026-03-17T01:54:51.800Z"
+    "played_at": "2026-03-27T22:44:03.720Z"
   },
-  "fetched_at": "2026-03-17T05:16:33Z",
-  "context": {
-    "type": "playlist",
-    "name": "floating",
-    "url": "https://open.spotify.com/playlist/607PxSGVeYpWMFiqtNgW6f?sessionId=1773705600002&mode=enhanced"
-  }
+  "fetched_at": "2026-03-28T06:14:07Z"
 }
