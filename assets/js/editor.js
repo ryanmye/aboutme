@@ -34,10 +34,9 @@
   }
 
   function getBodyValue() {
-    if (editor) {
-      return editor.getMarkdown();
-    }
-    return bodyInput.value;
+    var val = editor ? editor.getMarkdown() : bodyInput.value;
+    // Strip API origin from image URLs so saved markdown uses relative paths
+    return val.split(apiOrigin).join('');
   }
 
   function setBodyValue(value) {
@@ -50,7 +49,9 @@
 
   function insertAtCursor(snippet) {
     if (editor) {
-      editor.insertText(snippet);
+      // insertText escapes HTML; append to markdown source directly
+      var md = editor.getMarkdown();
+      editor.setMarkdown(md + snippet);
       return;
     }
     var start = bodyInput.selectionStart;
@@ -96,7 +97,10 @@
 
   function refreshPostList() {
     fetch(apiOrigin + '/posts')
-      .then(function (res) { return res.json(); })
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      })
       .then(function (posts) {
         postList.innerHTML = '';
         posts.forEach(function (p) {
@@ -121,7 +125,10 @@
           postList.appendChild(li);
         });
       })
-      .catch(function (err) { console.error('Failed to load post list', err); });
+      .catch(function (err) {
+        console.error('Failed to load post list', err);
+        postList.innerHTML = '<li class="editor-post-item editor-post-error">Could not load posts. Make sure the editor API is running: <code>bundle exec ruby scripts/local_editor_server.rb</code></li>';
+      });
   }
 
   newBtn.addEventListener('click', function (e) {
@@ -219,7 +226,7 @@
     var file = imageFileInput.files[0];
     if (!file) return;
 
-    var caption = imageCaptionInput.value.trim() || 'Caption';
+    var caption = imageCaptionInput.value.trim();
     var formData = new FormData();
     formData.append('image', file);
     formData.append('draft', draftInput.checked ? 'true' : 'false');
@@ -227,12 +234,17 @@
       .then(function (res) { return res.json(); })
       .then(function (payload) {
         var url = payload.url;
-        var cap = caption || payload.basename || 'Caption';
-        var figure = '\n\n<figure class="post-image">\n' +
-          '  <img src="' + url + '" alt="' + cap + '" />\n' +
-          '  <figcaption>' + cap + '</figcaption>\n' +
-          '</figure>\n\n';
-        insertAtCursor(figure);
+        var altText = caption || payload.basename || 'image';
+        // Use API origin for immediate display; save relative path for published blog
+        var displayUrl = apiOrigin + url;
+        // Insert as markdown image + italic caption (styled by CSS :has selector).
+        // Avoids <figure> HTML which Toast UI Editor strips during round-trip.
+        var snippet = '\n\n![' + altText + '](' + displayUrl + ')';
+        if (caption) {
+          snippet += '\n\n*' + caption + '*';
+        }
+        snippet += '\n\n';
+        insertAtCursor(snippet);
 
         imageFileInput.value = '';
         imageCaptionInput.value = '';
@@ -287,6 +299,33 @@
         ['scrollSync']
       ],
     });
+
+    // Prevent base64 image embedding by intercepting local image insertions.
+    if (typeof editor.removeHook === 'function') {
+      try { editor.removeHook('addImageBlobHook'); } catch (e) {}
+    }
+    if (typeof editor.addHook === 'function') {
+      editor.addHook('addImageBlobHook', function (blob, callback) {
+        var formData = new FormData();
+        var filename = (blob && blob.name) ? blob.name : 'image.png';
+        formData.append('image', blob, filename);
+        formData.append('draft', draftInput.checked ? 'true' : 'false');
+        fetch(apiOrigin + '/images', { method: 'POST', body: formData })
+          .then(function (res) {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+          })
+          .then(function (payload) {
+            callback(apiOrigin + payload.url);
+          })
+          .catch(function (err) {
+            console.error('Image upload hook failed', err);
+            alert('Image upload failed. See console for details.');
+          });
+        return false;
+      });
+    }
+
   }
 
   refreshPostList();

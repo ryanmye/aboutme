@@ -485,6 +485,19 @@ main {
   background: var(--surface);
 }
 
+.editor-post-item.editor-post-error {
+  color: var(--muted);
+  font-size: 0.8rem;
+  cursor: default;
+}
+.editor-post-item.editor-post-error:hover {
+  background: transparent;
+}
+.editor-post-item.editor-post-error code {
+  font-size: 0.75rem;
+  word-break: break-all;
+}
+
 .editor-help {
   margin: 0;
   color: var(--muted);
@@ -882,8 +895,12 @@ main {
 }
 
 .post-content {
+  --text-width: 65ch;
   font-size: 1.02rem;
   font-family: 'Inter', sans-serif;
+  max-width: min(var(--text-width), 100%);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .post-content h1,
@@ -937,23 +954,25 @@ main {
   display: block;
   margin: 1.25rem auto;
   border-radius: 6px;
+  max-width: 70%;
+  height: auto;
 }
 
-/* Editor figure.post-image: 65% of text width (~65ch) on large screens, full width on small */
+/* Images inserted by the editor: <figure class="post-image"> ... */
 .post-content figure.post-image {
-  --text-width: 65ch;
-  max-width: calc(0.65 * var(--text-width));
-  margin-left: auto;
-  margin-right: auto;
+  max-width: min(calc(var(--text-width) * 0.75), 100%);
+  margin: 1.25rem auto;
 }
 .post-content figure.post-image img {
   width: 100%;
-  height: auto;
   display: block;
   border-radius: 6px;
+  margin-left: auto;
+  margin-right: auto;
 }
 .post-content figure.post-image figcaption {
   text-align: center;
+  font-style: italic;
   margin-top: 0.5rem;
   color: var(--muted);
   font-size: 0.9rem;

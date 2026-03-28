@@ -6,6 +6,8 @@ require 'sinatra'
 require 'json'
 require 'fileutils'
 require 'time'
+require 'yaml'
+require 'base64'
 
 set :bind, '127.0.0.1'
 set :port, 4001
@@ -15,11 +17,14 @@ POSTS_DIR = File.join(ROOT, '_posts')
 DRAFTS_DIR = File.join(ROOT, '_drafts')
 IMAGES_DIR = File.join(ROOT, 'assets', 'images', 'posts')
 DRAFT_IMAGES_DIR = File.join(ROOT, 'assets', 'images', 'drafts')
+TEMP_IMAGES_DIR = File.join(ROOT, '_editor_tmp')
 
 FileUtils.mkdir_p(POSTS_DIR)
 FileUtils.mkdir_p(DRAFTS_DIR)
 FileUtils.mkdir_p(IMAGES_DIR)
 FileUtils.mkdir_p(DRAFT_IMAGES_DIR)
+FileUtils.mkdir_p(File.join(TEMP_IMAGES_DIR, 'posts'))
+FileUtils.mkdir_p(File.join(TEMP_IMAGES_DIR, 'drafts'))
 
 helpers do
   def json(body, status = 200)
@@ -57,18 +62,39 @@ helpers do
     if content =~ /\A---\s*\n(.*?)\n---\s*\n(.*)\z/m
       front_matter = $1
       body = $2
-      data = {}
-      front_matter.each_line do |line|
-        if line =~ /\A(\w+):\s*(.*)\z/
-          key = Regexp.last_match(1)
-          value = Regexp.last_match(2).strip
-          data[key] = value
+      data =
+        begin
+          parsed = YAML.safe_load(front_matter, permitted_classes: [Date, Time], aliases: true)
+          parsed.is_a?(Hash) ? parsed : {}
+        rescue StandardError
+          {}
         end
-      end
-      title = data['title'] || File.basename(path, '.md')
-      date = data['date']
-      tags = (data['tags'] || '').gsub(/[\[\]]/, '').split(',').map(&:strip).reject(&:empty?)
-      draft = (data['draft'].to_s == 'true')
+
+      title = data['title'].to_s.strip
+      title = File.basename(path, '.md') if title.empty?
+
+      date_val = data['date']
+      date =
+        if date_val.respond_to?(:iso8601)
+          date_val.iso8601
+        else
+          date_val.to_s.strip
+        end
+      date = nil if date.empty?
+
+      tags_val = data['tags']
+      tags =
+        case tags_val
+        when Array
+          tags_val.map { |t| t.to_s.strip }.reject(&:empty?)
+        when NilClass
+          []
+        else
+          tags_val.to_s.gsub(/[\[\]]/, '').split(',').map(&:strip).reject(&:empty?)
+        end
+
+      draft_val = data['draft']
+      draft = (draft_val == true || draft_val.to_s.strip.downcase == 'true')
       slug = slug_from_path(path)
       {
         'title' => title,
@@ -83,12 +109,78 @@ helpers do
       nil
     end
   end
+
+  def ext_for_mime(mime)
+    m = mime.to_s.downcase
+    return 'jpg' if m == 'image/jpeg' || m == 'image/jpg'
+    return 'png' if m == 'image/png'
+    return 'gif' if m == 'image/gif'
+    return 'webp' if m == 'image/webp'
+    return 'svg' if m == 'image/svg+xml'
+    'bin'
+  end
+
+  # Move images from _editor_tmp/ to assets/images/ when a post is saved.
+  def promote_temp_images(body)
+    body.scan(%r{/assets/images/(posts|drafts)/([^\s\)"']+)}).each do |subdir, filename|
+      temp = File.join(TEMP_IMAGES_DIR, subdir, filename)
+      dest = File.join(ROOT, 'assets', 'images', subdir, filename)
+      if File.exist?(temp)
+        FileUtils.mkdir_p(File.dirname(dest))
+        FileUtils.mv(temp, dest)
+      end
+    end
+  end
+
+  # Extract markdown images that embed base64 data URLs:
+  #   ![alt](data:image/png;base64,AAAA...)
+  # Writes decoded files under drafts/posts images folder and rewrites URLs.
+  def extract_base64_images(body, slug:, draft:)
+    out = body.to_s.dup
+    dest_dir = draft ? DRAFT_IMAGES_DIR : IMAGES_DIR
+    url_prefix = draft ? '/assets/images/drafts/' : '/assets/images/posts/'
+    idx = 0
+
+    # Stop at ')' to avoid swallowing the whole file. This matches the common markdown pattern.
+    re = /!\[(?<alt>[^\]]*)\]\((?<data>data:(?<mime>image\/[^;)\s]+);base64,(?<b64>[^)]+))\)/
+    out.gsub!(re) do
+      idx += 1
+      mime = Regexp.last_match(:mime)
+      b64 = Regexp.last_match(:b64)
+      ext = ext_for_mime(mime)
+      filename_base = "embedded-#{sanitize_slug(slug)}-#{idx}"
+      filename = "#{filename_base}.#{ext}"
+      dest_path = File.join(dest_dir, filename)
+      # Avoid overwriting if rerun
+      n = 1
+      while File.exist?(dest_path)
+        filename = "#{filename_base}-#{n}.#{ext}"
+        dest_path = File.join(dest_dir, filename)
+        n += 1
+      end
+
+      decoded = Base64.decode64(b64)
+      FileUtils.mkdir_p(dest_dir)
+      File.binwrite(dest_path, decoded)
+
+      alt = Regexp.last_match(:alt).to_s
+      "![#{alt}](#{url_prefix}#{filename})"
+    end
+
+    out
+  end
 end
 
 before do
-  headers 'Access-Control-Allow-Origin' => 'http://localhost:4000',
-          'Access-Control-Allow-Methods' => 'GET,POST,PUT,DELETE,OPTIONS',
-          'Access-Control-Allow-Headers' => 'Content-Type'
+  h = {
+    'Access-Control-Allow-Methods' => 'GET,POST,PUT,DELETE,OPTIONS',
+    'Access-Control-Allow-Headers' => 'Content-Type'
+  }
+  origin = request.env['HTTP_ORIGIN']
+  if origin && (origin.start_with?('http://localhost:') || origin.start_with?('http://127.0.0.1:'))
+    h['Access-Control-Allow-Origin'] = origin
+  end
+  headers h
 end
 
 options '/posts' do
@@ -143,6 +235,9 @@ post '/posts' do
   tags = Array(data['tags'] || []).map { |t| t.to_s.strip }.reject(&:empty?)
   draft = !!data['draft']
 
+  body = extract_base64_images(body, slug: slug, draft: draft)
+  promote_temp_images(body)
+
   front_matter = +"---\n"
   front_matter << "layout: post\n"
   front_matter << "title: \"#{title.gsub('"', '\"')}\"\n"
@@ -190,6 +285,9 @@ put '/posts/:kind/:slug' do
   tags = Array(data['tags'] || []).map { |t| t.to_s.strip }.reject(&:empty?)
   draft = !!data['draft']
 
+  body = extract_base64_images(body, slug: slug, draft: draft)
+  promote_temp_images(body)
+
   front_matter = +"---\n"
   front_matter << "layout: post\n"
   front_matter << "title: \"#{title.gsub('"', '\"')}\"\n"
@@ -199,6 +297,20 @@ put '/posts/:kind/:slug' do
 
   if draft
     new_path = File.join(DRAFTS_DIR, "#{slug}.md")
+    # Demote images: copy from posts to drafts when converting post → draft
+    if kind == 'post'
+      body = body.dup
+      post_image_regex = %r{/assets/images/posts/([^\s\)]+)}
+      body.scan(post_image_regex).flatten.uniq.each do |filename|
+        src = File.join(IMAGES_DIR, filename)
+        dest = File.join(DRAFT_IMAGES_DIR, filename)
+        if File.exist?(src)
+          FileUtils.mkdir_p(File.dirname(dest))
+          FileUtils.cp(src, dest)
+        end
+        body.gsub!("/assets/images/posts/#{filename}", "/assets/images/drafts/#{filename}")
+      end
+    end
   else
     date_prefix = time.strftime('%Y-%m-%d')
     filename = "#{date_prefix}-#{slug}.md"
@@ -260,6 +372,8 @@ post '/publish/:slug' do
     body.gsub!("/assets/images/drafts/#{filename}", "/assets/images/posts/#{filename}")
   end
 
+  promote_temp_images(body)
+
   date_prefix = time.strftime('%Y-%m-%d')
   filename = "#{date_prefix}-#{slug}.md"
   post_path = File.join(POSTS_DIR, filename)
@@ -277,6 +391,20 @@ post '/publish/:slug' do
   json({ slug: slug, kind: 'post', date: time.strftime('%Y-%m-%dT%H:%M') }, 201)
 end
 
+# Serve uploaded images directly so the editor preview works without
+# waiting for Jekyll to rebuild. Checks temp dir first, then final location.
+get '/assets/images/*' do |path|
+  temp_path = File.join(TEMP_IMAGES_DIR, path)
+  final_path = File.join(ROOT, 'assets', 'images', path)
+  if File.exist?(temp_path)
+    send_file temp_path
+  elsif File.exist?(final_path)
+    send_file final_path
+  else
+    halt 404
+  end
+end
+
 post '/images' do
   file = params['image'] && params['image'][:tempfile]
   filename = params['image'] && params['image'][:filename]
@@ -288,10 +416,13 @@ post '/images' do
   ts = Time.now.strftime('%Y%m%d%H%M%S')
   final_name = "#{ts}-#{basename}#{ext}"
   is_draft = params['draft'].to_s == 'true'
-  dest = File.join(is_draft ? DRAFT_IMAGES_DIR : IMAGES_DIR, final_name)
+  subdir = is_draft ? 'drafts' : 'posts'
+  # Write to _editor_tmp/ so Jekyll doesn't detect the change and reload the page.
+  # Images are promoted to assets/images/ when the post is saved.
+  dest = File.join(TEMP_IMAGES_DIR, subdir, final_name)
   FileUtils.cp(file.path, dest)
 
-  url = is_draft ? "/assets/images/drafts/#{final_name}" : "/assets/images/posts/#{final_name}"
+  url = "/assets/images/#{subdir}/#{final_name}"
   json({ url: url, basename: basename }, 201)
 end
 

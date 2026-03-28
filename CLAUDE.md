@@ -1,0 +1,411 @@
+# CLAUDE.md — Codebase Index
+
+> **If you are an LLM modifying this repository, update the relevant sections of this file to reflect your changes before finishing.**
+> Last updated: 2026-03-27
+
+## Project Overview
+
+Jekyll 3.8 personal website and blog for **Ryan Ye** (CS @ Cornell). Deployed on GitHub Pages at `ryanmye.github.io/aboutme`. Features data-driven pages (projects, research, about), a 5-theme color system, a local blog editor with Sinatra API, and automated Spotify "recently played" integration via GitHub Actions.
+
+## Quick Reference
+
+```bash
+# Local development (Jekyll)
+bundle exec jekyll serve --livereload --baseurl ""
+
+# Local editor server (separate terminal, port 4001)
+bundle exec ruby scripts/local_editor_server.rb
+
+# Production build (CI uses both configs)
+bundle exec jekyll build --config _config.yml,_config_prod.yml
+```
+
+- **Base URL:** `/aboutme` (GitHub Pages project site)
+- **Permalink format:** `/blog/:year/:month/:day/:title/`
+- **Themes:** 5 color themes via CSS custom properties — warm (default), linen, pure, barely, dark-mono
+- **Fonts:** Inter (body), DM Serif Display (headings/brand), JetBrains Mono (code)
+- **Spotify:** GitHub Actions updates `_data/now-playing.json` every 30 minutes
+
+## Directory Tree
+
+```
+.
+├── _config.yml              # Main Jekyll config
+├── _config_prod.yml         # Production overrides (disables editor)
+├── Gemfile                  # Ruby deps: jekyll 3.8, sinatra, kramdown-parser-gfm
+├── .gitignore
+├── CLAUDE.md                # This file (excluded from Jekyll build)
+│
+├── _layouts/
+│   ├── default.html         # Base layout (head + navbar + footer + theme.js)
+│   ├── post.html            # Blog post layout (title, date, tags, prev/next nav)
+│   └── editor.html          # Local editor layout (Toast UI Editor, dev-only)
+│
+├── _includes/
+│   ├── head.html            # <head>: meta, OG tags, fonts, CSS
+│   ├── navbar.html          # Sticky nav, 5-theme dots, mobile hamburger menu
+│   └── footer.html          # Copyright, social links, faith statement
+│
+├── _data/
+│   ├── profile.yml          # Name, email, social URLs
+│   ├── about.yml            # Bio, interests, education, skills
+│   ├── projects.yml         # 5 portfolio projects with tags/descriptions
+│   ├── research.yml         # Research positions, publications, interests
+│   └── now-playing.json     # Spotify track (auto-updated by GitHub Actions)
+│
+├── _posts/                  # Blog posts (YYYY-MM-DD-slug.md)
+├── _drafts/                 # Unpublished drafts (slug.md)
+│
+├── index.md                 # Homepage
+├── about.md                 # About page
+├── blog.md                  # Blog listing
+├── projects.md              # Projects showcase
+├── research.md              # Research page
+├── resume.md                # Resume page
+├── cv.md                    # CV page
+├── editor.md                # Editor page (dev-only)
+├── now-playing.json.html    # Exposes _data/now-playing.json as static JSON endpoint
+│
+├── assets/
+│   ├── css/styles.css       # Full stylesheet (1430 lines, 21 sections)
+│   ├── js/theme.js          # Theme switcher (localStorage persistence)
+│   ├── js/editor.js         # Editor UI (CRUD, image upload, Toast UI)
+│   └── images/
+│       ├── headshot.jpeg    # Profile photo
+│       ├── posts/           # Published post images (timestamped)
+│       └── drafts/          # Draft post images
+│
+├── scripts/
+│   ├── local_editor_server.rb      # Sinatra REST API for editing (port 4001)
+│   ├── migrate_images_to_figures.rb # Converts md images to <figure> blocks
+│   ├── extract_base64_images.rb     # Extracts inline base64 to files
+│   ├── backfill_titles.rb           # Auto-generates missing post titles
+│   └── get-spotify-refresh-token.py # One-time Spotify OAuth setup
+│
+├── .github/workflows/
+│   └── update-spotify.yml   # Cron job: fetch Spotify → commit now-playing.json
+│
+├── _editor_tmp/             # Temp images during editing (not committed)
+├── _site/                   # Built output (not committed)
+├── 25Dec_Ye_Ryan_Resume.pdf # PDF resume
+├── README.md                # Setup instructions
+└── LOCAL_DEV.md             # Local dev guide
+```
+
+---
+
+## Configuration Files
+
+### _config.yml (35 lines)
+Main Jekyll configuration. Key settings:
+- `title: "Ryan Ye"`, `baseurl: "/aboutme"`, `url: "https://ryanmye.github.io"`
+- `markdown: kramdown` with GFM input, Rouge syntax highlighter
+- `permalink: /blog/:year/:month/:day/:title/`
+- `local_editor: true` — enables editor nav link and page in development
+- Default layout `post` applied to all files in `_posts/`
+- Excludes: README.md, Gemfile, Gemfile.lock, node_modules, vendor
+
+### _config_prod.yml (4 lines)
+Production overlay (used in CI build). Overrides:
+- `local_editor: false` — hides editor
+- Excludes `editor.md` and `scripts/local_editor_server.rb` from build
+
+### Gemfile
+Dependencies: `jekyll ~> 3.8`, `webrick ~> 1.7`, `kramdown-parser-gfm`, `ffi ~> 1.15`, `sinatra ~> 3.0` (development group)
+
+---
+
+## Layouts
+
+### _layouts/default.html (22 lines)
+Base HTML5 layout for all non-post pages. Includes `head.html`, `navbar.html`, `footer.html`. Loads `theme.js` before `</body>`. **Used by:** index.md, about.md, blog.md, projects.md, research.md, resume.md, cv.md, editor.md (via editor.html which extends this pattern).
+
+### _layouts/post.html (54 lines)
+Blog post layout. Renders: `<article>` with title, ISO 8601 date (`date_to_xmlschema`), human-readable date (`"%B %-d, %Y"`), tag list (iterates `page.tags`), post content, previous/next navigation links. **Used by:** all files in `_posts/`.
+
+### _layouts/editor.html (83 lines)
+Local editor layout. Loads Toast UI Editor CSS/JS. Contains: post title input, datetime picker, tags input, draft checkbox, Toast UI Editor div, image upload form, action buttons (new/save/publish/delete), post list sidebar. **Conditionally rendered:** only when `site.local_editor == true` AND `jekyll.environment == "development"`. Loads `editor.js`.
+
+---
+
+## Includes
+
+### _includes/head.html (26 lines)
+HTML `<head>` contents:
+- Meta: charset, viewport, dynamic title, description (excerpt truncated to 160 chars), author
+- Open Graph: type ("article" for posts, "website" otherwise), URL, title, description
+- CSS: preloads `styles.css` with cache-busting timestamp
+- Fonts: Google Fonts preconnect, loads Inter, DM Serif Display, JetBrains Mono
+- Font Awesome 6.4.2 (loaded with `media="print" onload` for non-blocking)
+- Favicon: inline base64 SVG graduation cap emoji
+
+### _includes/navbar.html (54 lines)
+Sticky top navigation bar:
+- Brand link (site.author) to homepage
+- 5 theme color dot buttons (`data-theme` attribute) with inline background-color previews
+- Nav links: About (`/`), Research (`/research`), Projects (`/projects`), Blog (`/blog`), CV (`/cv`)
+- Conditional: Editor link shown only when `site.local_editor == true` AND `jekyll.environment == "development"`
+- Mobile: hamburger toggle button (3 spans), click-outside-to-close JS, ARIA attributes
+- Active link detection via `page.url` comparison
+
+### _includes/footer.html (16 lines)
+Site footer with: dynamic copyright year, "Jesus is King" statement, social links (GitHub, LinkedIn, email from site config). All external links use `target="_blank" rel="noopener noreferrer"`.
+
+---
+
+## Root Pages
+
+### index.md (186 lines) — Homepage
+**Layout:** default. **Data deps:** `site.data.about.skills`, `site.posts` (limit 3).
+
+Sections:
+1. **Profile card** — headshot, name, position (Cornell CS), social links, skills tags (from `_data/about.yml`)
+2. **Spotify widget** — `#spotify-now-playing` span, populated by inline `<script>` that fetches `/assets/data/now-playing.json` with 5s timeout. Helper functions: `timeAgo(isoStr)`, `escapeHtml(str)`. Renders track name, artists, context (playlist/album), relative time.
+3. **About blurb** — hardcoded summary paragraph
+4. **Blog preview** — table of latest 3 posts (date + title + truncated excerpt)
+5. **Research preview** — hardcoded Sun Lab entry
+
+### about.md (44 lines) — About Page
+**Layout:** default. **Data deps:** `site.data.about` (bio, education, skills, interests).
+Renders full bio, education details (Cornell, GPA 4.05, coursework), research interests, and skills.
+
+### blog.md (38 lines) — Blog Listing
+**Layout:** default. Lists all `site.posts` in reverse chronological order. Each entry shows date, title link, tags, and truncated excerpt.
+
+### projects.md (45 lines) — Projects
+**Layout:** default. **Data deps:** `site.data.projects`.
+Renders project cards by iterating `site.data.projects`. Each card: title, date range, description, tech tags, bullet points, optional GitHub link.
+
+### research.md (72 lines) — Research
+**Layout:** default. **Data deps:** `site.data.research`.
+Sections: subtitle, research positions (with role, lab, description, focus areas, notes), publications list, research interests, Google Scholar link.
+
+### resume.md (138 lines) — Resume
+**Layout:** default. **Data deps:** `site.data.about`, `site.data.projects`, `site.data.research`.
+Full resume page with education, skills, research positions, projects, publications. Pulls from multiple data files.
+
+### cv.md (137 lines) — CV
+**Layout:** default. Similar to resume.md but formatted as academic CV with additional sections (coursework, interests).
+
+### editor.md (15 lines) — Editor Page
+**Layout:** editor. Minimal wrapper that activates the editor layout. Only rendered in development when `local_editor: true`.
+
+### now-playing.json.html (5 lines) — Spotify JSON Endpoint
+**Layout:** null. **Permalink:** `/assets/data/now-playing.json`.
+Outputs `site.data['now-playing']` as JSON via Liquid `jsonify` filter. This is how the homepage JS fetches Spotify data from the static site.
+
+---
+
+## Data Files
+
+### _data/profile.yml
+Author identity: name ("Ryan Ye"), email, short description, social links (GitHub, LinkedIn, Google Scholar URLs).
+
+### _data/about.yml
+Structured resume data:
+- `bio`: multi-line description
+- `interests`: list of 4 research areas (ML, CV, AI for science, representation learning)
+- `education`: institution (Cornell), degree (B.S. CS, College of Engineering), expected May 2028, GPA 4.05, coursework by category
+- `skills`: programming (Python, Java, C/C++, OCaml), machine_learning (PyTorch, HF Transformers, NumPy, pandas, Matplotlib), tools (Git, VS Code, Jupyter, etc.)
+
+### _data/projects.yml
+Ordered list of 5 projects, each with: `title`, `date` (range string), `description`, `tags` (array), `bullets` (array), optional `url`. Projects: Calf Behavior Analysis, Traveling Salesman (hackathon), Sisyphus (AI productivity app), Piano Melody Generation, Personal Website.
+
+### _data/research.yml
+- `subtitle`: research focus statement
+- `scholar_url`: Google Scholar link
+- `positions`: 2 entries (MABe25 benchmark, AI for Animal Behavior) each with role, lab, PI, description, focus areas, notes
+- `publications`: 1 entry (economics paper, 2023)
+- `interests`: 4 research interest areas
+
+### _data/now-playing.json
+Auto-updated by GitHub Actions every 30 min. Schema:
+```json
+{
+  "track": {
+    "name": "...", "url": "spotify:track:...",
+    "artists": [{"name": "...", "url": "..."}],
+    "played_at": "ISO8601"
+  },
+  "fetched_at": "ISO8601",
+  "context": { "type": "playlist|album|artist", "name": "...", "url": "..." }
+}
+```
+
+---
+
+## Blog Posts
+
+| File | Title | Date | Tags |
+|------|-------|------|------|
+| `2026-01-01-first-post.md` | Hello, World — Welcome to My Blog | Jan 1, 2026 | life-update, meta, jekyll |
+| `2026-01-20-spring-semester-started.md` | Spring 2026 Semester Started | Jan 20, 2026 | life-update |
+| `2026-03-10-research-symposium-accepted.md` | Abstract accepted to ADSA! | Mar 12, 2026 | research, life-update |
+| `2026-03-17-first-real-blog-post.md` | first real blog post | Mar 17, 2026 | life update |
+
+Post front matter schema: `layout: post`, `title`, `date` (YYYY-MM-DD or ISO 8601 with timezone), `tags` (array), optional `excerpt`.
+
+---
+
+## Assets
+
+### assets/css/styles.css (1430 lines)
+Single stylesheet with 21 sections. CSS custom properties for theming (11 variables: `--bg`, `--surface`, `--border`, `--text`, `--muted`, `--accent`, `--accent-soft`, `--accent-dark`, `--color-code-bg`, `--color-code-text`, `--theme-dot-border`). Max width: 960px.
+
+**Section index:**
+
+| Line | Section |
+|------|---------|
+| 1 | CSS Reset & Base |
+| 10 | Custom Properties (theme defaults) |
+| 55 | Base Typography |
+| 131 | Layout (site wrapper, container) |
+| 152 | Navigation (sticky, al-folio tab style) |
+| 283 | Footer |
+| 347 | Editor (form styling) |
+| 517 | Profile Section (avatar, social, bio, skills) |
+| 666 | Content / Page Sections |
+| 690 | Section Headers (blog/page headings) |
+| 715 | Page Header (inner pages) |
+| 737 | Cards (project showcase, hover effects) |
+| 815 | Tags |
+| 838 | Blog / Post List |
+| 876 | Blog Post Page (article styling, figures, code blocks) |
+| 1015 | Research / Publications |
+| 1068 | CV / Resume Page |
+| 1188 | Skills list (inline tags) |
+| 1209 | Responsive (mobile breakpoints) |
+| 1282 | Spotify Widget |
+| 1313 | Announcements / News Table |
+
+Key patterns: always use `var(--name)` for colors, never hardcode hex values in component styles. Reduced-motion media query at L36 disables transitions.
+
+### assets/js/theme.js (108 lines)
+IIFE that manages the 5-theme color system:
+- **Themes:** warm (cream/terracotta, default), linen (neutral warm), pure (black-on-white), barely (dark warm), dark-mono (dark grayscale)
+- **`setTheme(key)`** — applies CSS custom properties to `document.documentElement.style`, saves to `localStorage["theme"]`
+- **`updateToggleUI(key)`** — highlights active theme dot button
+- Runs synchronously on load (prevents flash of wrong theme)
+- Event listeners on `.theme-dot` buttons
+
+### assets/js/editor.js (330 lines)
+Blog post editor UI. **Depends on:** Toast UI Editor library (loaded by editor.html layout), `local_editor_server.rb` API on port 4001.
+
+Key functions:
+- **`serializeForm()`** — collects title, date, tags, draft status, body, slug from form
+- **`toSlug(str)`** — converts titles to URL-safe slugs
+- **`refreshPostList()`** — `GET /posts`, renders post/draft list with click-to-load
+- **`savePost()`** — `POST /posts` (create) or `PUT /posts/:kind/:slug` (update)
+- **`deletePost()`** — `DELETE /posts/:kind/:slug`
+- **`publishDraft()`** — `POST /publish/:slug`
+- **Image upload:** `POST /images` with caption, embeds as `<figure>` HTML. Keyboard shortcut: Cmd+Shift+K (Mac) / Ctrl+Shift+K. Intercepts Toast UI Editor paste to prevent base64 embedding.
+
+API origin configurable via `data-api-origin` attribute (defaults to `http://localhost:4001`).
+
+### assets/images/
+- `headshot.jpeg` — profile photo (412KB)
+- `posts/` — published post images, naming convention: `YYYYMMDDHHMMSS-originalname.ext`
+- `drafts/` — draft post images (same naming convention)
+
+---
+
+## Scripts
+
+### scripts/local_editor_server.rb (428 lines)
+Sinatra REST API on `127.0.0.1:4001` for local blog editing. **Depends on:** sinatra, json, yaml, base64.
+
+**Endpoints:**
+
+| Method | Route | Purpose |
+|--------|-------|---------|
+| `GET` | `/posts` | List all posts + drafts (metadata only) |
+| `GET` | `/posts/:kind/:slug` | Read single post/draft with full body |
+| `POST` | `/posts` | Create new post or draft |
+| `PUT` | `/posts/:kind/:slug` | Update existing post/draft |
+| `DELETE` | `/posts/:kind/:slug` | Delete post/draft and its images |
+| `POST` | `/publish/:slug` | Convert draft to published post |
+| `POST` | `/images` | Upload image file |
+| `GET` | `/assets/images/*` | Serve images from temp or final dirs |
+| `OPTIONS` | `*` | CORS preflight |
+
+**Key helpers:**
+- `parse_post(path)` — extracts YAML front matter + markdown body
+- `promote_temp_images(body, kind)` — moves images from `_editor_tmp/` to `assets/images/`
+- `extract_base64_images(body, kind, slug)` — decodes inline base64 data URLs, saves as files
+- `ext_for_mime(mime)` — MIME type to file extension mapping
+
+**Image flow:** upload → `_editor_tmp/{posts|drafts}/YYYYMMDDHHMMSS-filename.ext` → promoted to `assets/images/{posts|drafts}/` on post save.
+
+**CORS:** restricted to localhost origins only.
+
+### scripts/migrate_images_to_figures.rb (114 lines)
+One-time migration script. Converts markdown image+caption patterns:
+```
+![alt](url)
+*caption*
+```
+to HTML `<figure class="post-image">` blocks with `<figcaption>`. Skips files already using `<figure>`.
+
+### scripts/extract_base64_images.rb (98 lines)
+One-time cleanup script. Finds base64 `data:image/...;base64,...` URLs in post markdown, decodes and saves as files to `assets/images/posts/`, replaces inline data with file paths. Naming: `embedded-{slug}-{index}.{ext}`.
+
+### scripts/backfill_titles.rb (75 lines)
+Maintenance script. Reads all posts/drafts, fills in missing `title` front matter by humanizing the slug (e.g., `hello-world` → `Hello World`).
+
+### scripts/get-spotify-refresh-token.py (152 lines)
+One-time setup script for Spotify integration. Runs OAuth 2.0 authorization code flow:
+1. Opens browser to Spotify auth page
+2. Captures callback on `localhost:8888`
+3. Exchanges code for refresh token
+4. Prints token for GitHub Secrets setup
+
+**Scope:** `user-read-recently-played`. **Dependencies:** Python stdlib only.
+
+---
+
+## GitHub Actions
+
+### .github/workflows/update-spotify.yml (111 lines)
+Automated Spotify "recently played" sync.
+
+**Trigger:** cron every 30 min (`*/30 * * * *`) + manual `workflow_dispatch`.
+
+**Steps:**
+1. Checkout repo
+2. Embedded Python script: exchanges refresh token → access token → `GET /v1/me/player/recently-played?limit=1` → extracts track metadata (name, URL, artists, played_at, context) → writes `_data/now-playing.json`
+3. Auto-commit with `[skip ci]` flag as `github-actions[bot]`
+
+**Required secrets:** `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, `SPOTIFY_REFRESH_TOKEN`
+
+---
+
+## Architecture & Data Flow
+
+### Build Pipeline
+`_config.yml` + `_config_prod.yml` (overlay) → Jekyll 3.8 → `_site/`
+
+### Page Rendering
+`page.md` → selects layout from front matter → layout includes `head.html`, `navbar.html`, `footer.html` → loads `theme.js` → Liquid reads from `_data/*.yml`
+
+### Theme System
+`navbar.html` renders 5 theme dots → user clicks → `theme.js` reads dot's `data-theme`, calls `setTheme()` → applies CSS custom properties to `:root` → `styles.css` uses `var(--*)` throughout → persisted to `localStorage["theme"]`
+
+### Spotify Widget
+`update-spotify.yml` (cron 30min) → Spotify API → writes `_data/now-playing.json` → Jekyll builds `now-playing.json.html` (permalink `/assets/data/now-playing.json`) → `index.md` inline JS fetches JSON → renders track info in `#spotify-now-playing`
+
+### Local Editor System
+`editor.md` (layout: editor) → `editor.html` loads Toast UI Editor + `editor.js` → `editor.js` CRUD calls to `local_editor_server.rb:4001` → server reads/writes `_posts/`, `_drafts/`, manages images in `_editor_tmp/` and `assets/images/`
+
+---
+
+## Conventions & Patterns
+
+- **Post filenames:** `YYYY-MM-DD-slug.md` in `_posts/`, `slug.md` in `_drafts/`
+- **Post front matter:** `layout: post`, `title: "..."`, `date: YYYY-MM-DD` (or ISO 8601), `tags: [array]`, optional `excerpt: "..."`
+- **Image naming:** `YYYYMMDDHHMMSS-originalname.ext` (timestamp prefix, set by editor server)
+- **CSS theming:** always use `var(--name)` for colors; never hardcode hex in component styles
+- **Data access:** `_data/` files accessed as `site.data.filename` in Liquid
+- **Conditional editor:** nav link + page only appear when `site.local_editor == true` AND `jekyll.environment == "development"`
+- **External deps:** Font Awesome 6.4.2, Google Fonts (Inter, DM Serif Display, JetBrains Mono), Toast UI Editor (editor only)
+- **Blog post images:** use markdown `![caption](url)` followed by `*caption*` on the next line (styled by CSS `:has()` selector). Avoid `<figure>` HTML — Toast UI Editor strips it during round-trip.
+- **Links:** all external links use `target="_blank" rel="noopener noreferrer"`

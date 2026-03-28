@@ -21,6 +21,7 @@ local_editor: true
 
 exclude:
   - README.md
+  - CLAUDE.md
   - Gemfile
   - Gemfile.lock
   - node_modules
