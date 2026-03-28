@@ -21,9 +21,10 @@
       <li><a href="{{ '/' | relative_url }}"{% if page.url == '/' %} class="active"{% endif %}>about</a></li>
       <li><a href="{{ '/research' | relative_url }}"{% if page.url contains '/research' %} class="active"{% endif %}>research</a></li>
       <li><a href="{{ '/projects' | relative_url }}"{% if page.url contains '/projects' %} class="active"{% endif %}>projects</a></li>
-      <li><a href="{{ '/blog' | relative_url }}"{% if page.url contains '/blog' %} class="active"{% endif %}>blog</a></li>
+      <li><a href="{{ '/blog' | relative_url }}"{% if page.url contains '/blog' or page.url contains '/gallery' %} class="active"{% endif %}>blog</a></li>
       {% if site.local_editor and jekyll.environment == "development" %}
       <li><a href="{{ '/editor' | relative_url }}"{% if page.url contains '/editor' %} class="active"{% endif %}>editor</a></li>
+      <li><a href="{{ '/album-editor' | relative_url }}"{% if page.url contains '/album-editor' %} class="active"{% endif %}>albums</a></li>
       {% endif %}
       <li><a href="{{ '/cv' | relative_url }}"{% if page.url contains '/cv' %} class="active"{% endif %}>cv</a></li>
     </ul>

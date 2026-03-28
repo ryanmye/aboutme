@@ -300,6 +300,61 @@
       ],
     });
 
+    // Highlight caption elements in the editor. ProseMirror adds trailing <br> inside paragraphs
+    // so :only-child never matches — use :first-child instead. We also apply inline styles as a
+    // fallback in case CSS injection can't reach the iframe.
+    var captionCSS = [
+      'p:has(> img) + p > em:first-child {',
+      '  display: block !important;',
+      '  background: #fff3cd !important;',
+      '  border-left: 3px solid #e6a817 !important;',
+      '  border-radius: 3px !important;',
+      '  padding: 2px 6px !important;',
+      '  font-style: italic !important;',
+      '}',
+      'p:has(> img) + p > em:first-child::before {',
+      '  content: "Caption: " !important;',
+      '  font-weight: 600;',
+      '  font-style: normal;',
+      '  font-size: 0.75rem;',
+      '  letter-spacing: 0.04em;',
+      '  text-transform: uppercase;',
+      '  color: #9a6700;',
+      '  margin-right: 4px;',
+      '}'
+    ].join('\n');
+
+    function injectCaptionStylesIntoDoc(doc) {
+      if (!doc || !doc.head) return false;
+      if (doc.getElementById('caption-indicator-style')) return true; // already done
+      var style = doc.createElement('style');
+      style.id = 'caption-indicator-style';
+      style.textContent = captionCSS;
+      doc.head.appendChild(style);
+      return true;
+    }
+
+    function tryCaptionInjection() {
+      // Inject into parent document (in case editor is not in an iframe)
+      injectCaptionStylesIntoDoc(document);
+      // Inject into every iframe on the page
+      var iframes = document.querySelectorAll('iframe');
+      iframes.forEach(function(f) {
+        try {
+          var doc = f.contentDocument || (f.contentWindow && f.contentWindow.document);
+          injectCaptionStylesIntoDoc(doc);
+        } catch (e) {}
+      });
+    }
+
+    // Poll until injection succeeds (iframe may load asynchronously)
+    var captionPollCount = 0;
+    var captionPollTimer = setInterval(function() {
+      tryCaptionInjection();
+      captionPollCount++;
+      if (captionPollCount >= 20) clearInterval(captionPollTimer); // give up after ~10s
+    }, 500);
+
     // Prevent base64 image embedding by intercepting local image insertions.
     if (typeof editor.removeHook === 'function') {
       try { editor.removeHook('addImageBlobHook'); } catch (e) {}

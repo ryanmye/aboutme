@@ -1,4 +1,5 @@
 local_editor: false
 exclude:
   - editor.md
+  - album-editor.md
   - scripts/local_editor_server.rb

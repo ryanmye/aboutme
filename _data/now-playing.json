@@ -1,20 +1,16 @@
 {
   "track": {
-    "name": "Pr\u00e9cis Two",
-    "url": "https://open.spotify.com/track/5LiO40bi3foQNkIDg4PlGV",
+    "name": "Sweet Boy",
+    "url": "https://open.spotify.com/track/59c2xv2kMzYM6HR9oY6BIa",
     "artists": [
       {
-        "name": "Vansire",
-        "url": "https://open.spotify.com/artist/6ft7JnxMyZhp7N52qzHymY"
-      },
-      {
-        "name": "Ivy Sole",
-        "url": "https://open.spotify.com/artist/4NcMrSi3B8eUVy6e1Ni3wu"
+        "name": "Malcolm Todd",
+        "url": "https://open.spotify.com/artist/7eKkW1zo5uzW8kUntiiBvz"
       }
     ],
-    "played_at": "2026-03-28T15:15:55.026Z"
+    "played_at": "2026-03-28T15:49:09.131Z"
   },
-  "fetched_at": "2026-03-28T15:19:26Z",
+  "fetched_at": "2026-03-28T15:51:31Z",
   "context": {
     "type": "playlist",
     "name": "floating",

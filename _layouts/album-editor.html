@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include head.html %}
+</head>
+<body>
+<div class="site-wrapper">
+
+  {% include navbar.html %}
+
+  <main id="main-content" role="main">
+    <div class="container">
+      <div class="page-content">
+        {{ content }}
+
+        {% if site.local_editor and jekyll.environment == "development" %}
+        <div class="page-content-editor">
+          <div class="editor-form">
+            <!-- Standalone album metadata (hidden by default, shown when editing standalone) -->
+            <section id="standalone-meta" class="editor-meta" style="display:none; margin-bottom: 1rem;">
+              <div class="editor-field">
+                <label for="album-title">Album Title</label>
+                <input id="album-title" type="text" placeholder="My Photo Album" required>
+              </div>
+              <div class="editor-field">
+                <label for="album-description">Description <span id="album-desc-counter" class="editor-help">0/500</span></label>
+                <textarea id="album-description" rows="3" maxlength="500" placeholder="A short description for this album (max 500 characters)"></textarea>
+              </div>
+              <div class="editor-field editor-field-inline">
+                <label for="album-draft">
+                  <input id="album-draft" type="checkbox"> Draft
+                </label>
+              </div>
+            </section>
+
+            <section class="editor-album">
+              <h2>Album Images <span id="album-count" class="editor-help">(0/25)</span></h2>
+              <p class="editor-help">
+                Add images to this album. For post albums, images from the post body are included automatically.
+              </p>
+              <div class="editor-album-upload-row">
+                <input id="album-image-file" type="file" accept="image/*" multiple>
+                <button type="button" id="album-add-image">Add to album</button>
+              </div>
+              <div id="album-items" class="editor-album-items"></div>
+              <div class="editor-actions" style="margin-top: 1rem;">
+                <button type="button" id="new-album">New album</button>
+                <button type="button" id="album-save" style="border-color: var(--accent);">Save album</button>
+                <button type="button" id="album-delete">Delete album</button>
+              </div>
+            </section>
+          </div>
+
+          <section class="editor-post-list">
+            <div class="editor-tabs">
+              <button type="button" id="tab-post-albums" class="editor-tab active">Post Albums</button>
+              <button type="button" id="tab-standalone-albums" class="editor-tab">Standalone Albums</button>
+            </div>
+            <div id="pane-post-albums">
+              <p class="editor-help">Choose a post to manage its photo album.</p>
+              <ul id="post-list" class="editor-posts"></ul>
+            </div>
+            <div id="pane-standalone-albums" style="display:none;">
+              <p class="editor-help">Choose a standalone album or create a new one.</p>
+              <ul id="standalone-list" class="editor-posts"></ul>
+            </div>
+          </section>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </main>
+
+  {% include footer.html %}
+
+</div>
+<script src="{{ '/assets/js/album-editor.js' | relative_url }}"></script>
+</body>
+</html>

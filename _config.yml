@@ -19,6 +19,11 @@ kramdown:
 
 local_editor: true
 
+collections:
+  albums:
+    output: true
+    permalink: /albums/:title/
+
 exclude:
   - README.md
   - CLAUDE.md
@@ -33,3 +38,8 @@ defaults:
       type: "posts"
     values:
       layout: "post"
+  - scope:
+      path: ""
+      type: "albums"
+    values:
+      layout: "album"

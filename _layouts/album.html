@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include head.html %}
+</head>
+<body>
+<div class="site-wrapper">
+
+  {% include navbar.html %}
+
+  <main id="main-content" role="main">
+    <div class="container">
+      <article class="album-detail">
+        <header class="post-header">
+          <h1>{{ page.title }}</h1>
+          <p class="post-date">
+            <time datetime="{{ page.date | date_to_xmlschema }}">
+              {{ page.date | date: "%B %-d, %Y" }}
+            </time>
+          </p>
+        </header>
+
+        {% if page.description and page.description != "" %}
+        <p class="album-description">{{ page.description }}</p>
+        {% endif %}
+
+        {% if page.images and page.images.size > 0 %}
+        <div class="album-grid">
+          {% for img in page.images %}
+          <figure class="album-photo">
+            <img src="{{ img.src | relative_url }}" alt="{{ img.caption | default: page.title }}" loading="lazy">
+            {% if img.caption and img.caption != "" %}
+            <figcaption>{{ img.caption }}</figcaption>
+            {% endif %}
+          </figure>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <nav class="album-nav">
+          <a href="{{ '/gallery' | relative_url }}">&larr; Back to gallery</a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  {% include footer.html %}
+
+</div>
+</body>
+</html>

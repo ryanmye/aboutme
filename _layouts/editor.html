@@ -3,6 +3,27 @@
 <head>
   {% include head.html %}
   <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css">
+  <style>
+    /* Caption indicator: only in the editor, never in published posts */
+    .toastui-editor-contents p:has(> img) + p > em:only-child {
+      display: block;
+      background: #fff3cd;
+      border-left: 3px solid #e6a817;
+      border-radius: 3px;
+      padding: 2px 6px;
+      font-style: italic;
+    }
+    .toastui-editor-contents p:has(> img) + p > em:only-child::before {
+      content: "Caption: ";
+      font-weight: 600;
+      font-style: normal;
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #9a6700;
+      margin-right: 4px;
+    }
+  </style>
 </head>
 <body>
 <div class="site-wrapper">

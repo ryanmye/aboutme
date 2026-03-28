@@ -40,8 +40,10 @@ bundle exec jekyll build --config _config.yml,_config_prod.yml
 │
 ├── _layouts/
 │   ├── default.html         # Base layout (head + navbar + footer + theme.js)
-│   ├── post.html            # Blog post layout (title, date, tags, prev/next nav)
-│   └── editor.html          # Local editor layout (Toast UI Editor, dev-only)
+│   ├── post.html            # Blog post layout (title, date, tags, album grid, prev/next nav)
+│   ├── album.html           # Standalone album detail page layout
+│   ├── editor.html          # Local editor layout (Toast UI Editor, dev-only)
+│   └── album-editor.html   # Album editor layout (dev-only, tabs for post/standalone albums)
 │
 ├── _includes/
 │   ├── head.html            # <head>: meta, OG tags, fonts, CSS
@@ -57,6 +59,7 @@ bundle exec jekyll build --config _config.yml,_config_prod.yml
 │
 ├── _posts/                  # Blog posts (YYYY-MM-DD-slug.md)
 ├── _drafts/                 # Unpublished drafts (slug.md)
+├── _albums/                 # Standalone photo albums (slug.md, Jekyll collection)
 │
 ├── index.md                 # Homepage
 ├── about.md                 # About page
@@ -66,16 +69,20 @@ bundle exec jekyll build --config _config.yml,_config_prod.yml
 ├── resume.md                # Resume page
 ├── cv.md                    # CV page
 ├── editor.md                # Editor page (dev-only)
+├── album-editor.md          # Album editor page (dev-only)
+├── gallery.md               # Photo gallery page (album cards + all photos grid)
 ├── now-playing.json.html    # Exposes _data/now-playing.json as static JSON endpoint
 │
 ├── assets/
-│   ├── css/styles.css       # Full stylesheet (1430 lines, 21 sections)
+│   ├── css/styles.css       # Full stylesheet (23 sections)
 │   ├── js/theme.js          # Theme switcher (localStorage persistence)
-│   ├── js/editor.js         # Editor UI (CRUD, image upload, Toast UI)
+│   ├── js/editor.js         # Post editor UI (CRUD, image upload, Toast UI)
+│   ├── js/album-editor.js   # Album editor UI (post albums + standalone albums + image deletion)
 │   └── images/
 │       ├── headshot.jpeg    # Profile photo
 │       ├── posts/           # Published post images (timestamped)
-│       └── drafts/          # Draft post images
+│       ├── drafts/          # Draft post images (gitignored)
+│       └── albums/          # Standalone album images
 │
 ├── scripts/
 │   ├── local_editor_server.rb      # Sinatra REST API for editing (port 4001)
@@ -146,7 +153,8 @@ HTML `<head>` contents:
 Sticky top navigation bar:
 - Brand link (site.author) to homepage
 - 5 theme color dot buttons (`data-theme` attribute) with inline background-color previews
-- Nav links: About (`/`), Research (`/research`), Projects (`/projects`), Blog (`/blog`), CV (`/cv`)
+- Nav links: About (`/`), Research (`/research`), Projects (`/projects`), Blog (`/blog`), CV (`/cv`). Gallery linked from blog page header.
+- Dev-only nav links: Editor (`/editor`), Albums (`/album-editor`)
 - Conditional: Editor link shown only when `site.local_editor == true` AND `jekyll.environment == "development"`
 - Mobile: hamburger toggle button (3 spans), click-outside-to-close JS, ARIA attributes
 - Active link detection via `page.url` comparison
@@ -192,6 +200,12 @@ Full resume page with education, skills, research positions, projects, publicati
 
 ### editor.md (15 lines) — Editor Page
 **Layout:** editor. Minimal wrapper that activates the editor layout. Only rendered in development when `local_editor: true`.
+
+### gallery.md — Gallery Page
+**Layout:** default. **Permalink:** `/gallery/`. Linked from blog page header ("gallery →"). Iterates both `site.posts` and `site.albums` (Jekyll collection), renders album cards for items with `images` frontmatter (cover image, title, date, photo count). Post-album cards link to the post URL; standalone album cards link to `/albums/:slug/`. Below albums, shows "All Photos" grid with every image across all posts and albums. Fully static — no JS needed. Standalone albums with `draft: true` are excluded.
+
+### album-editor.md — Album Editor Page
+**Layout:** album-editor. **Permalink:** `/album-editor/`. Dev-only. Tabbed interface: "Post Albums" tab lists blog posts for managing their photo albums; "Standalone Albums" tab lists standalone albums. Supports creating new standalone albums with title, description (max 500 chars), and draft flag. Removing an image from an album also deletes the file from disk (if not referenced elsewhere). Post albums use `PUT /posts/:kind/:slug/images`; standalone albums use `POST/PUT/DELETE /albums/:slug`.
 
 ### now-playing.json.html (5 lines) — Spotify JSON Endpoint
 **Layout:** null. **Permalink:** `/assets/data/now-playing.json`.
@@ -246,14 +260,14 @@ Auto-updated by GitHub Actions every 30 min. Schema:
 | `2026-03-10-research-symposium-accepted.md` | Abstract accepted to ADSA! | Mar 12, 2026 | research, life-update |
 | `2026-03-17-first-real-blog-post.md` | first real blog post | Mar 17, 2026 | life update |
 
-Post front matter schema: `layout: post`, `title`, `date` (YYYY-MM-DD or ISO 8601 with timezone), `tags` (array), optional `excerpt`.
+Post front matter schema: `layout: post`, `title`, `date` (YYYY-MM-DD or ISO 8601 with timezone), `tags` (array), optional `excerpt`, optional `images` (array of `{src, caption}` for photo album — displayed on gallery page).
 
 ---
 
 ## Assets
 
-### assets/css/styles.css (1430 lines)
-Single stylesheet with 21 sections. CSS custom properties for theming (11 variables: `--bg`, `--surface`, `--border`, `--text`, `--muted`, `--accent`, `--accent-soft`, `--accent-dark`, `--color-code-bg`, `--color-code-text`, `--theme-dot-border`). Max width: 960px.
+### assets/css/styles.css
+Single stylesheet with 23 sections. CSS custom properties for theming (11 variables: `--bg`, `--surface`, `--border`, `--text`, `--muted`, `--accent`, `--accent-soft`, `--accent-dark`, `--color-code-bg`, `--color-code-text`, `--theme-dot-border`). Max width: 960px.
 
 **Section index:**
 
@@ -274,12 +288,15 @@ Single stylesheet with 21 sections. CSS custom properties for theming (11 variab
 | 815 | Tags |
 | 838 | Blog / Post List |
 | 876 | Blog Post Page (article styling, figures, code blocks) |
-| 1015 | Research / Publications |
-| 1068 | CV / Resume Page |
-| 1188 | Skills list (inline tags) |
-| 1209 | Responsive (mobile breakpoints) |
-| 1282 | Spotify Widget |
-| 1313 | Announcements / News Table |
+| ~1015 | Gallery Page (album cards grid, all-photos grid) |
+| ~1095 | Album Detail Page (album grid, album description, post album section) |
+| ~1166 | Editor Album Section (thumbnail rows, caption inputs, tabs) |
+| ~1160 | Research / Publications |
+| ~1215 | CV / Resume Page |
+| ~1335 | Skills list (inline tags) |
+| ~1355 | Responsive (mobile breakpoints) |
+| ~1430 | Spotify Widget |
+| ~1460 | Announcements / News Table |
 
 Key patterns: always use `var(--name)` for colors, never hardcode hex values in component styles. Reduced-motion media query at L36 disables transitions.
 
@@ -291,30 +308,40 @@ IIFE that manages the 5-theme color system:
 - Runs synchronously on load (prevents flash of wrong theme)
 - Event listeners on `.theme-dot` buttons
 
-### assets/js/editor.js (330 lines)
+### assets/js/editor.js
 Blog post editor UI. **Depends on:** Toast UI Editor library (loaded by editor.html layout), `local_editor_server.rb` API on port 4001.
 
 Key functions:
 - **`serializeForm()`** — collects title, date, tags, draft status, body, slug from form
 - **`toSlug(str)`** — converts titles to URL-safe slugs
 - **`refreshPostList()`** — `GET /posts`, renders post/draft list with click-to-load
-- **`savePost()`** — `POST /posts` (create) or `PUT /posts/:kind/:slug` (update)
-- **`deletePost()`** — `DELETE /posts/:kind/:slug`
-- **`publishDraft()`** — `POST /publish/:slug`
-- **Image upload:** `POST /images` with caption, embeds as `<figure>` HTML. Keyboard shortcut: Cmd+Shift+K (Mac) / Ctrl+Shift+K. Intercepts Toast UI Editor paste to prevent base64 embedding.
+- **`loadPostIntoForm(post)`** — populates form fields
+- **Image upload:** `POST /images` with caption, inserts as markdown `![alt](url)` + `*caption*`. Keyboard shortcut: Cmd+Shift+K (Mac) / Ctrl+Shift+K. Intercepts Toast UI Editor paste to prevent base64 embedding.
 
 API origin configurable via `data-api-origin` attribute (defaults to `http://localhost:4001`).
+
+### assets/js/album-editor.js
+Album editor UI with tabs for post albums and standalone albums. **Depends on:** `local_editor_server.rb` API on port 4001.
+
+Key features:
+- **Tabbed interface:** "Post Albums" tab lists blog posts; "Standalone Albums" tab lists standalone albums
+- **Post albums:** separates body-detected images (read-only, shown dimmed) from album-only images (editable). Saves via `PUT /posts/:kind/:slug/images`
+- **Standalone albums:** title, description (max 500 chars with counter), draft checkbox. Saves via `POST/PUT /albums/:slug`
+- Upload images to album (up to 25 total), add captions, remove
+- **Image deletion:** removing an image calls `POST /images/delete` to delete the file from disk (server checks if referenced elsewhere first)
+- Delete standalone album button (calls `DELETE /albums/:slug`, cleans up orphaned images)
 
 ### assets/images/
 - `headshot.jpeg` — profile photo (412KB)
 - `posts/` — published post images, naming convention: `YYYYMMDDHHMMSS-originalname.ext`
-- `drafts/` — draft post images (same naming convention)
+- `drafts/` — draft post images (same naming convention, gitignored)
+- `albums/` — standalone album images (same naming convention)
 
 ---
 
 ## Scripts
 
-### scripts/local_editor_server.rb (428 lines)
+### scripts/local_editor_server.rb
 Sinatra REST API on `127.0.0.1:4001` for local blog editing. **Depends on:** sinatra, json, yaml, base64.
 
 **Endpoints:**
@@ -325,19 +352,34 @@ Sinatra REST API on `127.0.0.1:4001` for local blog editing. **Depends on:** sin
 | `GET` | `/posts/:kind/:slug` | Read single post/draft with full body |
 | `POST` | `/posts` | Create new post or draft |
 | `PUT` | `/posts/:kind/:slug` | Update existing post/draft |
-| `DELETE` | `/posts/:kind/:slug` | Delete post/draft and its images |
+| `PUT` | `/posts/:kind/:slug/images` | Save album images only (used by album editor) |
+| `DELETE` | `/posts/:kind/:slug` | Delete post/draft + orphaned images |
 | `POST` | `/publish/:slug` | Convert draft to published post |
-| `POST` | `/images` | Upload image file |
+| `GET` | `/albums` | List all standalone albums |
+| `GET` | `/albums/:slug` | Read single standalone album |
+| `POST` | `/albums` | Create standalone album |
+| `PUT` | `/albums/:slug` | Update standalone album |
+| `DELETE` | `/albums/:slug` | Delete standalone album + orphaned images |
+| `POST` | `/images` | Upload image file (supports `album=true` param) |
+| `POST` | `/images/delete` | Delete image file if not referenced elsewhere |
 | `GET` | `/assets/images/*` | Serve images from temp or final dirs |
 | `OPTIONS` | `*` | CORS preflight |
 
 **Key helpers:**
-- `parse_post(path)` — extracts YAML front matter + markdown body
-- `promote_temp_images(body, kind)` — moves images from `_editor_tmp/` to `assets/images/`
+- `parse_post(path)` — extracts YAML front matter (including `images` array) + markdown body
+- `parse_album(path)` — extracts album YAML front matter (title, description, images, draft)
+- `album_to_file(album)` — serializes album hash to YAML frontmatter file content
+- `parse_images_from_data(data)` — validates and normalizes `images` array from request JSON
+- `images_to_frontmatter(images)` — serializes images array to YAML for frontmatter output
+- `extract_body_images(body)` — parses markdown body for `![alt](url)` + optional `*caption*` patterns, returns `[{src, caption}]`
+- `merge_images(body_images, album_images)` — deduplicates by src, album images take priority for captions
+- `promote_temp_images(body, images=[])` — moves images from `_editor_tmp/` to `assets/images/`, scans body + album `src` paths (supports posts/drafts/albums subdirs)
+- `find_image_references(src, exclude_path:)` — scans all posts + albums for references to an image src
+- `delete_image_if_orphaned(src, exclude_path:)` — deletes image file only if no other post/album references it
 - `extract_base64_images(body, kind, slug)` — decodes inline base64 data URLs, saves as files
 - `ext_for_mime(mime)` — MIME type to file extension mapping
 
-**Image flow:** upload → `_editor_tmp/{posts|drafts}/YYYYMMDDHHMMSS-filename.ext` → promoted to `assets/images/{posts|drafts}/` on post save.
+**Image flow:** upload → `_editor_tmp/{posts|drafts|albums}/YYYYMMDDHHMMSS-filename.ext` → promoted to `assets/images/{posts|drafts|albums}/` on save. Draft↔post conversion rewrites paths in `images` frontmatter. Deleting a post/album also deletes orphaned image files.
 
 **CORS:** restricted to localhost origins only.
 
@@ -397,14 +439,27 @@ Automated Spotify "recently played" sync.
 `update-spotify.yml` (cron 30min) → Spotify API → writes `_data/now-playing.json` → Jekyll builds `now-playing.json.html` (permalink `/assets/data/now-playing.json`) → `index.md` inline JS fetches JSON → renders track info in `#spotify-now-playing`
 
 ### Local Editor System
-`editor.md` (layout: editor) → `editor.html` loads Toast UI Editor + `editor.js` → `editor.js` CRUD calls to `local_editor_server.rb:4001` → server reads/writes `_posts/`, `_drafts/`, manages images in `_editor_tmp/` and `assets/images/`
+`editor.md` (layout: editor) → `editor.html` loads Toast UI Editor + `editor.js` → `editor.js` CRUD calls to `local_editor_server.rb:4001` → server reads/writes `_posts/`, `_drafts/`, manages images in `_editor_tmp/` and `assets/images/`.
+
+### Photo Gallery
+`gallery.md` (linked from blog page) iterates both `site.posts` and `site.albums` → renders album cards (cover, title, count) + full photo grid. Post-album cards link to the post URL (album grid rendered at bottom of post page). Standalone album cards link to `/albums/:slug/` (dedicated detail page). Fully static — no JS. Draft standalone albums (`draft: true`) excluded from gallery.
+
+**Image sources for post albums:**
+1. **Auto-detected:** server extracts `![alt](url)` patterns from post body on save → merged into `images` frontmatter
+2. **Album editor:** separate page (`/album-editor/`) for adding extra images with captions → saved via `PUT /posts/:kind/:slug/images`
+
+**Standalone albums:** `_albums/` collection with `output: true`. Each `.md` file has frontmatter: `title`, `date`, `description` (max 500 chars), `draft`, `images: [{src, caption}]`. Layout: `album.html`. Images stored in `assets/images/albums/`.
+
+**Image deletion security:** removing an image from an album calls `POST /images/delete` → server checks all posts + albums for references → only deletes if orphaned. Deleting a post/album also cleans up orphaned images. Draft images in `assets/images/drafts/` are gitignored and won't be published.
 
 ---
 
 ## Conventions & Patterns
 
 - **Post filenames:** `YYYY-MM-DD-slug.md` in `_posts/`, `slug.md` in `_drafts/`
-- **Post front matter:** `layout: post`, `title: "..."`, `date: YYYY-MM-DD` (or ISO 8601), `tags: [array]`, optional `excerpt: "..."`
+- **Post front matter:** `layout: post`, `title: "..."`, `date: YYYY-MM-DD` (or ISO 8601), `tags: [array]`, optional `excerpt: "..."`, optional `images: [{src, caption}]` (photo album, max 25)
+- **Album filenames:** `slug.md` in `_albums/`
+- **Album front matter:** `layout: album`, `title: "..."`, `date: YYYY-MM-DD`, `description: "..."` (max 500 chars), optional `draft: true`, `images: [{src, caption}]`
 - **Image naming:** `YYYYMMDDHHMMSS-originalname.ext` (timestamp prefix, set by editor server)
 - **CSS theming:** always use `var(--name)` for colors; never hardcode hex in component styles
 - **Data access:** `_data/` files accessed as `site.data.filename` in Liquid

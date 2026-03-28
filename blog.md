@@ -5,7 +5,10 @@ permalink: /blog/
 ---
 
 <div class="page-header">
-  <h1>Blog</h1>
+  <div class="section-header">
+    <h1>Blog</h1>
+    <a href="{{ '/gallery' | relative_url }}">gallery &rarr;</a>
+  </div>
   <p class="subtitle">Notes, tutorials, and life updates.</p>
 </div>
 
