@@ -23,4 +23,5 @@ Thumbs.db
 # Local-only editor drafts and draft images
 _drafts/
 assets/images/drafts/
-_editor_tmp/.bundle/
+_editor_tmp/
+.bundle/

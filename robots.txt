@@ -65,7 +65,7 @@ Disallow: /
 User-agent: Sidetrade indexer bot
 Disallow: /
 
-User-agent: iaskspider/2.0
+User-agent: iaskspider
 Disallow: /
 
 User-agent: Webzio-Extended
