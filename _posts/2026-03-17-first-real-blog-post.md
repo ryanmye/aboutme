@@ -31,7 +31,7 @@ Sometimes, I almost want to move to a city after graduation, but I don't know ho
 
 Anyways, here are some photos from the city:
 
-![if my album system works, there should be more photos down below too](/assets/images/posts/20260402013942-2026-04-02_01-20-45.png)
+![if my album system works, there should be more photos down below too]({{ '/assets/images/posts/20260402013942-2026-04-02_01-20-45.png' | relative_url }})
 
 *if my album system works, there should be more photos down below too*
 
@@ -39,7 +39,7 @@ Anyways, here are some photos from the city:
 
 It also snowed again! after the 3rd or 4th fake spring. Boaz says there’re 1 or 2 more to go, so I’m keeping my hopes down for real spring, which actually only begins during finals week when everyone is too busy to worry about it. Taking advantage of the snow, we played football in the snow after a FFA snowball fight. Tackle. With a yoga ball. It was chaotic. It might’ve been fun. Might do it again. Definitely a 10/10 experience though.
 
-![post yogaball pic](/assets/images/posts/20260328022349-IMG_2768.jpeg)
+![post yogaball pic]({{ '/assets/images/posts/20260328022349-IMG_2768.jpeg' | relative_url }})
 
 *post yogaball pic*
 

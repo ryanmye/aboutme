@@ -64,12 +64,25 @@
     var val = editor ? editor.getMarkdown() : bodyInput.value;
     // Strip API origin from image URLs so saved markdown uses relative paths
     val = val.split(apiOrigin).join('');
-    return restoreCaptions(val);
+    // Restore any captions stripped by WYSIWYG round-trip (before Liquid wrapping,
+    // so insertedCaptions keys still match bare /assets/ paths)
+    val = restoreCaptions(val);
+    // Wrap bare /assets/ image paths in Liquid relative_url so they work on
+    // GitHub Pages (which serves under a baseurl like /aboutme)
+    val = val.replace(/!\[([^\]]*)\]\((\/assets\/[^)]+)\)/g, function(_, alt, src) {
+      return '![' + alt + "]({{ '" + src + "' | relative_url }})";
+    });
+    return val;
   }
 
   function setBodyValue(value) {
     if (editor) {
-      editor.setMarkdown(value || '');
+      // Convert Liquid relative_url tags back to bare paths for display in editor
+      var display = (value || '').replace(
+        /\{\{\s*'(\/assets\/[^']+)'\s*\|\s*relative_url\s*\}\}/g,
+        function(_, src) { return apiOrigin + src; }
+      );
+      editor.setMarkdown(display);
     } else {
       bodyInput.value = value || '';
     }
