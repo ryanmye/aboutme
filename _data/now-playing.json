@@ -1,19 +1,19 @@
 {
   "track": {
-    "name": "How Great Thou Art - Live",
-    "url": "https://open.spotify.com/track/31Pg9jmlYPwG5jCEBbRwE7",
+    "name": "Seven",
+    "url": "https://open.spotify.com/track/5QvditjxADt1HMKPgaMjJm",
     "artists": [
       {
-        "name": "Phil Wickham",
-        "url": "https://open.spotify.com/artist/5d1JhBfyb58upMXCZOdbQu"
+        "name": "Men I Trust",
+        "url": "https://open.spotify.com/artist/3zmfs9cQwzJl575W1ZYXeT"
       }
     ],
-    "played_at": "2026-04-07T15:47:26.270Z"
+    "played_at": "2026-04-11T20:17:57.685Z"
   },
-  "fetched_at": "2026-04-07T15:50:34Z",
+  "fetched_at": "2026-04-11T20:18:57Z",
   "context": {
     "type": "playlist",
-    "name": "surrender my life",
-    "url": "https://open.spotify.com/playlist/1eQ5bBxjfhMjB797PyQmgq"
+    "name": "floating",
+    "url": "https://open.spotify.com/playlist/607PxSGVeYpWMFiqtNgW6f"
   }
 }
