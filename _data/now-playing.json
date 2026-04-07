@@ -1,19 +1,19 @@
 {
   "track": {
-    "name": "How Great Thou Art - Live",
-    "url": "https://open.spotify.com/track/31Pg9jmlYPwG5jCEBbRwE7",
+    "name": "My Love Mine All Mine",
+    "url": "https://open.spotify.com/track/3vkCueOmm7xQDoJ17W1Pm3",
     "artists": [
       {
-        "name": "Phil Wickham",
-        "url": "https://open.spotify.com/artist/5d1JhBfyb58upMXCZOdbQu"
+        "name": "Mitski",
+        "url": "https://open.spotify.com/artist/2uYWxilOVlUdk4oV9DvwqK"
       }
     ],
-    "played_at": "2026-04-07T15:47:26.270Z"
+    "played_at": "2026-04-11T15:09:23.537Z"
   },
-  "fetched_at": "2026-04-07T15:50:34Z",
+  "fetched_at": "2026-04-11T17:00:55Z",
   "context": {
     "type": "playlist",
-    "name": "surrender my life",
-    "url": "https://open.spotify.com/playlist/1eQ5bBxjfhMjB797PyQmgq"
+    "name": "floating",
+    "url": "https://open.spotify.com/playlist/607PxSGVeYpWMFiqtNgW6f"
   }
 }
