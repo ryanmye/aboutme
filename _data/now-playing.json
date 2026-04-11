@@ -1,16 +1,16 @@
 {
   "track": {
-    "name": "Seven",
-    "url": "https://open.spotify.com/track/5QvditjxADt1HMKPgaMjJm",
+    "name": "do i ever cross your mind",
+    "url": "https://open.spotify.com/track/5dt0PVoQ5xq5mvrJ1Bp3ou",
     "artists": [
       {
-        "name": "Men I Trust",
-        "url": "https://open.spotify.com/artist/3zmfs9cQwzJl575W1ZYXeT"
+        "name": "sombr",
+        "url": "https://open.spotify.com/artist/4G9NDjRyZFDlJKMRL8hx3S"
       }
     ],
-    "played_at": "2026-04-11T20:17:57.685Z"
+    "played_at": "2026-04-11T20:54:08.495Z"
   },
-  "fetched_at": "2026-04-11T20:18:57Z",
+  "fetched_at": "2026-04-11T20:55:28Z",
   "context": {
     "type": "playlist",
     "name": "floating",
