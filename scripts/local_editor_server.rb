@@ -76,7 +76,10 @@ helpers do
         end
 
       title = data['title'].to_s.strip
-      title = File.basename(path, '.md') if title.empty?
+      if title.empty?
+        raw_slug = slug_from_path(path).to_s
+        title = raw_slug.gsub(/[-_]+/, ' ').split.map { |w| w[0]&.upcase.to_s + w[1..].to_s }.join(' ')
+      end
 
       date_val = data['date']
       date =
