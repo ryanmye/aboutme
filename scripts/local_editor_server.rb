@@ -509,7 +509,12 @@ put '/posts/:kind/:slug' do
          end
   tags = Array(data['tags'] || []).map { |t| t.to_s.strip }.reject(&:empty?)
   draft = !!data['draft']
-  images = parse_images_from_data(data)
+  images = if data.key?('images')
+             parse_images_from_data(data)
+           else
+             existing_post = parse_post(existing_path)
+             (existing_post && existing_post['images']) || []
+           end
 
   body = extract_base64_images(body, slug: slug, draft: draft)
   promote_temp_images(body, images)
@@ -657,7 +662,12 @@ post '/publish/:slug' do
          end
 
   tags = Array(data['tags'] || []).map { |t| t.to_s.strip }.reject(&:empty?)
-  images = parse_images_from_data(data)
+  images = if data.key?('images')
+             parse_images_from_data(data)
+           else
+             existing_draft = parse_post(draft_path)
+             (existing_draft && existing_draft['images']) || []
+           end
 
   body = promote_draft_images(body, images)
   promote_temp_images(body, images)
