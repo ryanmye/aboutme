@@ -1,19 +1,14 @@
 {
   "track": {
-    "name": "Spoiled",
-    "url": "https://open.spotify.com/track/0Shd736f6A7tJxzCTUI69X",
+    "name": "Hikari",
+    "url": "https://open.spotify.com/track/7DUZul1sAZe77qPJKxMDhI",
     "artists": [
       {
-        "name": "Noah Kahan",
-        "url": "https://open.spotify.com/artist/2RQXRUsr4IW1f3mKyKsy4B"
+        "name": "Ava Mills",
+        "url": "https://open.spotify.com/artist/0hddNnCOE55jYZXTVyvEDj"
       }
     ],
-    "played_at": "2026-04-24T19:14:31.802Z"
+    "played_at": "2026-04-26T07:09:19.597Z"
   },
-  "fetched_at": "2026-04-24T21:37:09Z",
-  "context": {
-    "type": "album",
-    "name": "The Great Divide",
-    "url": "https://open.spotify.com/album/2fnkyn9EybagIoFJ7a13oz"
-  }
+  "fetched_at": "2026-04-26T07:10:26Z"
 }
