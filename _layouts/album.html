@@ -27,18 +27,7 @@
         {% if page.images and page.images.size > 0 %}
         <div class="album-grid">
           {% for img in page.images %}
-          <figure class="album-photo">
-            <button type="button" class="album-photo-trigger"
-                    data-album-index="{{ forloop.index0 }}"
-                    data-full-src="{{ img.src | relative_url }}"
-                    data-caption="{{ img.caption | default: '' | escape }}"
-                    aria-label="Open photo{% if img.caption and img.caption != '' %}: {{ img.caption | escape }}{% endif %}">
-              <img src="{{ img.src | relative_url }}" alt="{{ img.caption | default: page.title }}" loading="lazy">
-            </button>
-            {% if img.caption and img.caption != "" %}
-            <figcaption>{{ img.caption }}</figcaption>
-            {% endif %}
-          </figure>
+          {% include photo_card.html src=img.src caption=img.caption index=forloop.index0 fallback_alt=page.title %}
           {% endfor %}
         </div>
         {% endif %}

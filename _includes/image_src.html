@@ -1,0 +1,42 @@
+{%- comment -%}
+  Pluggable image URL resolver. All album/gallery image URLs go through here so
+  the delivery backend can be swapped via site.images.source in _config.yml.
+
+  Inputs:
+    src     - repo-relative path, e.g. "/assets/images/posts/foo.png"
+    variant - "thumb" | "med" | "original"
+
+  Output: a single URL string; callers should wrap in a capture tag and pipe through strip.
+
+  Backends:
+    local (default)   - uses _data/image_meta.yml to map to pre-generated thumbs
+    cloudflare_resize - prefixes originals with /cdn-cgi/image/<opts>/
+    cloudflare_images - uses imagedelivery.net/<hash>/<cf_id>/<variant>
+
+  Falls back to the original src whenever a variant cannot be resolved, so the
+  page always renders something even if the manifest is stale.
+{%- endcomment -%}
+{%- assign _src = include.src -%}
+{%- assign _variant = include.variant | default: "original" -%}
+{%- assign _src_rel = _src | remove_first: '/' -%}
+{%- assign _meta_key = _src_rel | remove_first: 'assets/images/' -%}
+{%- assign _meta = site.data.image_meta[_meta_key] -%}
+{%- assign _source = site.images.source | default: "local" -%}
+{%- if _source == "cloudflare_images" and _meta and _meta.cf_id and site.images.cloudflare.account_hash != "" -%}
+  {%- assign _cf_variant = _variant -%}
+  {%- if _variant == "original" -%}{%- assign _cf_variant = "public" -%}{%- endif -%}
+https://imagedelivery.net/{{ site.images.cloudflare.account_hash }}/{{ _meta.cf_id }}/{{ _cf_variant }}
+{%- elsif _source == "cloudflare_resize" and _variant != "original" -%}
+  {%- assign _w = site.images.widths[_variant] -%}
+  {%- if _w == nil -%}{%- if _variant == "thumb" -%}{%- assign _w = 600 -%}{%- else -%}{%- assign _w = 1600 -%}{%- endif -%}{%- endif -%}
+  {%- if _variant == "thumb" -%}{%- assign _q = 78 -%}{%- else -%}{%- assign _q = 82 -%}{%- endif -%}
+  {%- assign _prefix = site.images.cloudflare.resize_prefix | default: "/cdn-cgi/image" -%}
+{{ _prefix }}/width={{ _w }},quality={{ _q }},format=auto{{ _src_rel | prepend: '/' | relative_url }}
+{%- else -%}
+  {%- if _variant != "original" and _meta and _meta[_variant] and _meta[_variant].src -%}
+    {%- assign _variant_rel = _meta[_variant].src | prepend: '/assets/images/' -%}
+{{ _variant_rel | relative_url }}
+  {%- else -%}
+{{ _src | relative_url }}
+  {%- endif -%}
+{%- endif -%}

@@ -53,7 +53,22 @@
         </header>
 
         <div class="post-content">
-          {{ content }}
+          {%- comment -%}
+            Rewrite inline markdown image URLs to pre-generated `-med.jpg` variants
+            and add lazy loading. Keeps kramdown-rendered `<img>` tags in sync with
+            the optimized pipeline used by the album grid below.
+          {%- endcomment -%}
+          {% assign processed_content = content %}
+          {% for entry in site.data.image_meta %}
+            {% assign _meta = entry[1] %}
+            {% if _meta.med and _meta.med.src %}
+              {% assign _orig = entry[0] | prepend: '/assets/images/' %}
+              {% assign _med = _meta.med.src | prepend: '/assets/images/' %}
+              {% assign processed_content = processed_content | replace: _orig, _med %}
+            {% endif %}
+          {% endfor %}
+          {% assign processed_content = processed_content | replace: '<img ', '<img loading="lazy" decoding="async" ' %}
+          {{ processed_content }}
         </div>
 
         {% if page.images and page.images.size > 0 %}
@@ -61,18 +76,7 @@
           <h2>Album</h2>
           <div class="album-grid">
             {% for img in page.images %}
-            <figure class="album-photo">
-              <button type="button" class="album-photo-trigger"
-                      data-album-index="{{ forloop.index0 }}"
-                      data-full-src="{{ img.src | relative_url }}"
-                      data-caption="{{ img.caption | default: '' | escape }}"
-                      aria-label="Open photo{% if img.caption and img.caption != '' %}: {{ img.caption | escape }}{% endif %}">
-                <img src="{{ img.src | relative_url }}" alt="{{ img.caption | default: page.title }}" loading="lazy">
-              </button>
-              {% if img.caption and img.caption != "" %}
-              <figcaption>{{ img.caption }}</figcaption>
-              {% endif %}
-            </figure>
+            {% include photo_card.html src=img.src caption=img.caption index=forloop.index0 fallback_alt=page.title %}
             {% endfor %}
           </div>
         </section>

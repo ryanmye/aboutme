@@ -10,4 +10,5 @@ gem "ffi", "~> 1.15"
 
 group :development do
   gem "sinatra", "~> 3.0"
+  gem "mini_magick", "~> 4.12"
 end

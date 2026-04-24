@@ -35,6 +35,8 @@
     document.body.appendChild(overlay);
 
     var imgEl = overlay.querySelector('.album-lightbox-img');
+    imgEl.decoding = 'async';
+    if ('fetchPriority' in imgEl) imgEl.fetchPriority = 'high';
     var captionEl = overlay.querySelector('.album-lightbox-caption');
     var counterEl = overlay.querySelector('.album-lightbox-counter');
     var closeBtn = overlay.querySelector('.album-lightbox-close');
@@ -44,6 +46,20 @@
     var currentIndex = -1;
     var previousFocus = null;
     var previousBodyOverflow = '';
+
+    function preload(src) {
+      if (!src) return;
+      var im = new Image();
+      im.decoding = 'async';
+      im.src = src;
+    }
+
+    function preloadNeighbors(i) {
+      var total = photos.length;
+      if (total < 2) return;
+      preload(photos[(i + 1) % total].src);
+      preload(photos[(i - 1 + total) % total].src);
+    }
 
     function showAt(i) {
       var total = photos.length;
@@ -55,6 +71,7 @@
       captionEl.textContent = photo.caption || '';
       captionEl.style.display = photo.caption ? '' : 'none';
       counterEl.textContent = (idx + 1) + ' / ' + total;
+      preloadNeighbors(idx);
     }
 
     function open(index) {

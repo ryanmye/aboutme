@@ -77,18 +77,7 @@ album_lightbox: true
     {% for post in site.posts %}
       {% if post.images and post.images.size > 0 %}
         {% for img in post.images %}
-        <figure class="album-photo">
-          <button type="button" class="album-photo-trigger"
-                  data-album-index="{{ photo_idx }}"
-                  data-full-src="{{ img.src | relative_url }}"
-                  data-caption="{{ img.caption | default: '' | escape }}"
-                  aria-label="Open photo{% if img.caption and img.caption != '' %}: {{ img.caption | escape }}{% endif %}">
-            <img src="{{ img.src | relative_url }}" alt="{{ img.caption | default: post.title }}" loading="lazy">
-          </button>
-          {% if img.caption and img.caption != "" %}
-          <figcaption>{{ img.caption }}</figcaption>
-          {% endif %}
-        </figure>
+        {% include photo_card.html src=img.src caption=img.caption index=photo_idx fallback_alt=post.title %}
         {% assign photo_idx = photo_idx | plus: 1 %}
         {% endfor %}
       {% endif %}
@@ -97,18 +86,7 @@ album_lightbox: true
       {% unless album.draft %}
         {% if album.images and album.images.size > 0 %}
           {% for img in album.images %}
-          <figure class="album-photo">
-            <button type="button" class="album-photo-trigger"
-                    data-album-index="{{ photo_idx }}"
-                    data-full-src="{{ img.src | relative_url }}"
-                    data-caption="{{ img.caption | default: '' | escape }}"
-                    aria-label="Open photo{% if img.caption and img.caption != '' %}: {{ img.caption | escape }}{% endif %}">
-              <img src="{{ img.src | relative_url }}" alt="{{ img.caption | default: album.title }}" loading="lazy">
-            </button>
-            {% if img.caption and img.caption != "" %}
-            <figcaption>{{ img.caption }}</figcaption>
-            {% endif %}
-          </figure>
+          {% include photo_card.html src=img.src caption=img.caption index=photo_idx fallback_alt=album.title %}
           {% assign photo_idx = photo_idx | plus: 1 %}
           {% endfor %}
         {% endif %}

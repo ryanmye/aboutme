@@ -1,0 +1,12 @@
+{% assign pc_meta_key = include.src | remove_first: '/assets/images/' | remove_first: 'assets/images/' %}
+{% assign pc_meta = site.data.image_meta[pc_meta_key] %}
+{% capture pc_grid_src %}{% include image_src.html src=include.src variant="thumb" %}{% endcapture %}
+{% capture pc_full_src %}{% include image_src.html src=include.src variant="med" %}{% endcapture %}
+{% capture pc_orig_src %}{% include image_src.html src=include.src variant="original" %}{% endcapture %}
+{% assign pc_caption = include.caption | default: "" %}
+<figure class="album-photo">
+  <button type="button" class="album-photo-trigger" data-album-index="{{ include.index }}" data-full-src="{{ pc_full_src | strip }}" data-original-src="{{ pc_orig_src | strip }}" data-caption="{{ pc_caption | escape }}" aria-label="Open photo{% if pc_caption != '' %}: {{ pc_caption | escape }}{% endif %}">
+    <img src="{{ pc_grid_src | strip }}" {% if pc_meta and pc_meta.thumb %}width="{{ pc_meta.thumb.w }}" height="{{ pc_meta.thumb.h }}"{% endif %} alt="{{ pc_caption | default: include.fallback_alt }}" loading="lazy" decoding="async" fetchpriority="low">
+  </button>
+  {% if pc_caption != "" %}<figcaption>{{ pc_caption }}</figcaption>{% endif %}
+</figure>

@@ -24,6 +24,20 @@ kramdown:
 
 local_editor: true
 
+# Image delivery configuration. `source` selects which backend renders image URLs;
+# all template-level calls go through _includes/image_src.html.
+#   local              - default, serves pre-generated thumbnails from assets/images/
+#   cloudflare_resize  - rewrites URLs through a Cloudflare zone's /cdn-cgi/image/ prefix
+#   cloudflare_images  - uses https://imagedelivery.net/<hash>/<id>/<variant> (requires cf_id in _data/image_meta.yml)
+images:
+  source: local
+  widths:
+    thumb: 600
+    med: 1600
+  cloudflare:
+    account_hash: ""
+    resize_prefix: "/cdn-cgi/image"
+
 collections:
   albums:
     output: true

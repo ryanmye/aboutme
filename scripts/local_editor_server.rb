@@ -9,6 +9,13 @@ require 'time'
 require 'yaml'
 require 'base64'
 
+begin
+  require 'mini_magick'
+  MINI_MAGICK_AVAILABLE = true
+rescue LoadError
+  MINI_MAGICK_AVAILABLE = false
+end
+
 set :bind, '127.0.0.1'
 set :port, 4001
 
@@ -20,6 +27,13 @@ DRAFT_IMAGES_DIR = File.join(ROOT, 'assets', 'images', 'drafts')
 ALBUM_IMAGES_DIR = File.join(ROOT, 'assets', 'images', 'albums')
 ALBUMS_DIR = File.join(ROOT, '_albums')
 TEMP_IMAGES_DIR = File.join(ROOT, '_editor_tmp')
+IMAGE_META_PATH = File.join(ROOT, '_data', 'image_meta.yml')
+
+THUMB_W = 600
+MED_W = 1600
+THUMB_Q = 78
+MED_Q = 82
+VARIANT_EXTS = %w[.png .jpg .jpeg].freeze
 
 FileUtils.mkdir_p(POSTS_DIR)
 FileUtils.mkdir_p(DRAFTS_DIR)
@@ -276,12 +290,23 @@ helpers do
 
     # Resolve to absolute path
     abs = File.join(ROOT, src.sub(%r{^/}, ''))
+    deleted = false
     if File.exist?(abs)
       File.delete(abs)
-      true
-    else
-      false
+      deleted = true
     end
+
+    # Clean up generated thumbnail variants and manifest entry regardless of
+    # whether the source file existed — it may have been removed manually.
+    if VARIANT_EXTS.include?(File.extname(abs).downcase) && File.basename(abs) !~ /-(thumb|med)\.jpg\z/i
+      %w[thumb med].each do |v|
+        variant_abs = variant_abs_path(abs, v)
+        File.delete(variant_abs) if File.exist?(variant_abs)
+      end
+      remove_image_manifest_entry(image_meta_key(abs))
+    end
+
+    deleted
   end
 
   def ext_for_mime(mime)
@@ -295,6 +320,7 @@ helpers do
   end
 
   # Move images from _editor_tmp/ to assets/images/ when a post is saved.
+  # Also auto-generates responsive thumbnails + updates the image_meta manifest.
   def promote_temp_images(body, images = [])
     scannable = body.to_s + images.map { |i| " #{i['src']}" }.join
     scannable.scan(%r{/assets/images/(posts|drafts|albums)/([^\s\)"']+)}).each do |subdir, filename|
@@ -303,8 +329,122 @@ helpers do
       if File.exist?(temp)
         FileUtils.mkdir_p(File.dirname(dest))
         FileUtils.mv(temp, dest)
+        generate_thumbnails_for(dest)
+      elsif File.exist?(dest)
+        generate_thumbnails_for(dest) unless thumbnails_fresh?(dest)
       end
     end
+  end
+
+  # Returns the repo-relative manifest key for an absolute path under
+  # assets/images/, e.g. "posts/20260101-foo.png". nil for anything outside.
+  def image_meta_key(abs_path)
+    prefix = File.join(ROOT, 'assets', 'images') + '/'
+    return nil unless abs_path.start_with?(prefix)
+    abs_path.sub(prefix, '')
+  end
+
+  def variant_abs_path(source_abs, variant)
+    dir = File.dirname(source_abs)
+    base = File.basename(source_abs, File.extname(source_abs))
+    File.join(dir, "#{base}-#{variant}.jpg")
+  end
+
+  def thumbnails_fresh?(source_abs)
+    thumb_abs = variant_abs_path(source_abs, 'thumb')
+    med_abs = variant_abs_path(source_abs, 'med')
+    File.exist?(thumb_abs) && File.exist?(med_abs) &&
+      File.mtime(thumb_abs) >= File.mtime(source_abs) &&
+      File.mtime(med_abs) >= File.mtime(source_abs)
+  end
+
+  # Generate thumb + med JPEG variants next to source_abs and update the
+  # _data/image_meta.yml manifest. Degrades silently if mini_magick is missing.
+  def generate_thumbnails_for(source_abs)
+    return unless File.exist?(source_abs)
+    return unless VARIANT_EXTS.include?(File.extname(source_abs).downcase)
+    base = File.basename(source_abs)
+    return if base =~ /-(thumb|med)\.jpg\z/i
+    return unless MINI_MAGICK_AVAILABLE
+
+    key = image_meta_key(source_abs)
+    return unless key
+
+    thumb_abs = variant_abs_path(source_abs, 'thumb')
+    med_abs = variant_abs_path(source_abs, 'med')
+
+    thumb_w, thumb_h, orig_w, orig_h = write_image_variant(source_abs, thumb_abs, THUMB_W, THUMB_Q)
+    med_w, med_h, _, _ = write_image_variant(source_abs, med_abs, MED_W, MED_Q)
+
+    update_image_manifest(key) do |entry|
+      entry['w'] = orig_w
+      entry['h'] = orig_h
+      entry['thumb'] = { 'src' => image_meta_key(thumb_abs), 'w' => thumb_w, 'h' => thumb_h }
+      entry['med']   = { 'src' => image_meta_key(med_abs),   'w' => med_w,   'h' => med_h }
+    end
+  rescue StandardError => e
+    warn "generate_thumbnails_for(#{source_abs}): #{e.message}"
+  end
+
+  def write_image_variant(source_abs, out_abs, max_w, quality)
+    img = MiniMagick::Image.open(source_abs)
+    orig_w = img.width
+    orig_h = img.height
+    img.combine_options do |c|
+      c.auto_orient
+      if File.extname(source_abs).downcase == '.png'
+        c.background 'white'
+        c.alpha 'remove'
+        c.alpha 'off'
+      end
+      c.strip
+      c.resize "#{max_w}x>"
+      c.interlace 'Plane'
+      c.quality quality.to_s
+    end
+    img.format 'jpg'
+    img.write(out_abs)
+    out = MiniMagick::Image.open(out_abs)
+    [out.width, out.height, orig_w, orig_h]
+  end
+
+  def load_image_manifest
+    return {} unless File.exist?(IMAGE_META_PATH)
+    data = YAML.safe_load(File.read(IMAGE_META_PATH), aliases: false) || {}
+    data.is_a?(Hash) ? data : {}
+  rescue StandardError
+    {}
+  end
+
+  def write_image_manifest(data)
+    FileUtils.mkdir_p(File.dirname(IMAGE_META_PATH))
+    sorted = data.keys.sort.each_with_object({}) { |k, acc| acc[k] = data[k] }
+    header = <<~HEADER
+      # Generated by scripts/generate_thumbnails.rb. Do not edit by hand.
+      # Each key is a path under assets/images/. `cf_id` (when set) is reserved
+      # for Cloudflare Images integration and is preserved on regeneration.
+    HEADER
+    tmp = "#{IMAGE_META_PATH}.tmp"
+    File.write(tmp, header + sorted.to_yaml(line_width: -1))
+    File.rename(tmp, IMAGE_META_PATH)
+  end
+
+  def update_image_manifest(key)
+    manifest = load_image_manifest
+    entry = manifest[key] || {}
+    preserved_cf = entry['cf_id']
+    yield entry
+    entry['cf_id'] = preserved_cf if preserved_cf
+    manifest[key] = entry
+    write_image_manifest(manifest)
+  end
+
+  def remove_image_manifest_entry(key)
+    return unless key
+    manifest = load_image_manifest
+    return unless manifest.key?(key)
+    manifest.delete(key)
+    write_image_manifest(manifest)
   end
 
   # Promote images from drafts/ to posts/ when publishing. Rewrites URLs in
@@ -319,6 +459,8 @@ helpers do
         FileUtils.mkdir_p(File.dirname(dest))
         FileUtils.cp(src, dest)
         File.delete(src) rescue nil
+        cleanup_draft_variants(filename)
+        generate_thumbnails_for(dest)
       end
       body.gsub!("/assets/images/drafts/#{filename}", "/assets/images/posts/#{filename}")
     end
@@ -331,10 +473,24 @@ helpers do
         FileUtils.mkdir_p(File.dirname(dest))
         FileUtils.cp(src, dest)
         File.delete(src) rescue nil
+        cleanup_draft_variants(fname)
+        generate_thumbnails_for(dest)
       end
       img['src'] = img['src'].gsub('/assets/images/drafts/', '/assets/images/posts/')
     end
     body
+  end
+
+  # Remove the draft-side thumb/med JPEGs and manifest entry after a draft
+  # image has been promoted to posts/.
+  def cleanup_draft_variants(filename)
+    draft_abs = File.join(DRAFT_IMAGES_DIR, filename)
+    return unless VARIANT_EXTS.include?(File.extname(draft_abs).downcase)
+    %w[thumb med].each do |v|
+      variant_abs = variant_abs_path(draft_abs, v)
+      File.delete(variant_abs) if File.exist?(variant_abs)
+    end
+    remove_image_manifest_entry(image_meta_key(draft_abs))
   end
 
   # Extract markdown images that embed base64 data URLs:

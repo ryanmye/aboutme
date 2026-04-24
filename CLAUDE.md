@@ -4,7 +4,7 @@
 > 1. Update the relevant sections of this file to reflect your changes before finishing.
 > 2. **Anti-AI defense is a hard requirement.** Every new page, layout, or include you create MUST follow the anti-AI defense checklist in the "Anti-AI Defense" section below. Do not skip this, even for dev-only pages.
 >
-> Last updated: 2026-04-24
+> Last updated: 2026-04-24 (image optimization pipeline)
 
 ## Project Overview
 
@@ -51,12 +51,15 @@ bundle exec jekyll build --config _config.yml,_config_prod.yml
 ├── _includes/
 │   ├── head.html            # <head>: meta, OG tags, fonts, CSS
 │   ├── navbar.html          # Sticky nav, 5-theme dots, mobile hamburger menu
-│   └── footer.html          # Copyright, social links, faith statement
+│   ├── footer.html          # Copyright, social links, faith statement
+│   ├── image_src.html       # Pluggable image URL resolver (local | cloudflare_resize | cloudflare_images)
+│   └── photo_card.html      # Shared album/gallery photocard (figure + lightbox trigger)
 │
 ├── _data/
 │   ├── about.yml            # Bio (long + short), interests, education, skills, teaching, honors, blog_blurb
 │   ├── projects.yml         # 5 portfolio projects with tags/descriptions (3 have cv: true)
 │   ├── research.yml         # Research positions (2), publications, interests
+│   ├── image_meta.yml       # Generated image manifest (dimensions + thumb/med variant paths)
 │   └── now-playing.json     # Spotify track (auto-updated by GitHub Actions)
 │
 ├── _posts/                  # Blog posts (YYYY-MM-DD-slug.md) — currently 3 posts
@@ -79,6 +82,7 @@ bundle exec jekyll build --config _config.yml,_config_prod.yml
 │   ├── js/theme.js          # Theme switcher (localStorage persistence)
 │   ├── js/editor.js         # Post editor UI (CRUD, image upload, Toast UI)
 │   ├── js/album-editor.js   # Album editor UI (post albums + standalone albums + image deletion)
+│   ├── js/album-lightbox.js # Shared photocard lightbox (keyboard nav, neighbor preload)
 │   └── images/
 │       ├── headshot.jpeg    # Profile photo
 │       ├── posts/           # Published post images (timestamped)
@@ -87,6 +91,7 @@ bundle exec jekyll build --config _config.yml,_config_prod.yml
 │
 ├── scripts/
 │   ├── local_editor_server.rb      # Sinatra REST API for editing (port 4001)
+│   ├── generate_thumbnails.rb       # Backfill CLI: emits -thumb.jpg/-med.jpg + image_meta.yml
 │   ├── migrate_images_to_figures.rb # Converts md images to <figure> blocks
 │   ├── extract_base64_images.rb     # Extracts inline base64 to files
 │   ├── backfill_titles.rb           # Auto-generates missing post titles
@@ -106,7 +111,7 @@ bundle exec jekyll build --config _config.yml,_config_prod.yml
 
 ## Configuration Files
 
-### _config.yml (~50 lines)
+### _config.yml (~65 lines)
 Main Jekyll configuration. Key settings:
 - `title: "Ryan Ye"`, `baseurl: "/aboutme"`, `url: "https://ryanmye.github.io"`
 - `twitter_username: "ryanmye0"` — used for Twitter Card meta tags
@@ -115,6 +120,11 @@ Main Jekyll configuration. Key settings:
 - `local_editor: true` — enables editor nav link and page in development
 - `plugins: [jekyll-sitemap, jekyll-feed]` — auto-generates `sitemap.xml` and `feed.xml`
 - `collections.albums`: `output: true`, `permalink: /albums/:title/` — standalone album Jekyll collection
+- `images:` block selects the image delivery backend used by `_includes/image_src.html`:
+  - `source: local` (default) — serves pre-generated thumbnails from `assets/images/`
+  - `source: cloudflare_resize` — routes originals through `/cdn-cgi/image/<opts>/` (requires the site to sit behind a Cloudflare zone with Image Resizing enabled)
+  - `source: cloudflare_images` — uses `https://imagedelivery.net/<account_hash>/<cf_id>/<variant>` (requires `cf_id` in `_data/image_meta.yml` and `images.cloudflare.account_hash` set)
+  - `images.widths: { thumb: 600, med: 1600 }` — pixel widths used by local generation and Cloudflare Image Resizing variant URLs
 - Defaults: `post` layout applied to all files in `_posts/`, `album` layout applied to all files in `_albums/`
 - Excludes: README.md, CLAUDE.md, Gemfile, Gemfile.lock, node_modules, vendor
 
@@ -124,7 +134,7 @@ Production overlay (used in CI build). Overrides:
 - Excludes `editor.md`, `album-editor.md`, and `scripts/local_editor_server.rb` from build
 
 ### Gemfile
-Dependencies: `jekyll ~> 3.8`, `webrick ~> 1.7`, `kramdown-parser-gfm`, `ffi ~> 1.15`, `jekyll-sitemap`, `jekyll-feed`, `sinatra ~> 3.0` (development group)
+Dependencies: `jekyll ~> 3.8`, `webrick ~> 1.7`, `kramdown-parser-gfm`, `ffi ~> 1.15`, `jekyll-sitemap`, `jekyll-feed`. Development group: `sinatra ~> 3.0` (editor API), `mini_magick ~> 4.12` (thumbnail generation; requires ImageMagick on PATH — `brew install imagemagick`).
 
 ---
 
@@ -176,6 +186,17 @@ Sticky top navigation bar:
 
 ### _includes/footer.html (16 lines)
 Site footer with: dynamic copyright year, "Jesus is King" statement, social links (GitHub, LinkedIn, email from site config). All external links use `target="_blank" rel="noopener noreferrer"`.
+
+### _includes/image_src.html (~40 lines)
+Pluggable image URL resolver — the single choke point for every album/gallery image URL. Takes `src` (repo-relative path, e.g. `/assets/images/posts/foo.png`) and `variant` (`thumb` | `med` | `original`) and emits one URL string. Branches on `site.images.source`:
+- `local` — looks up `site.data.image_meta[<key>]` and returns the matching variant path (e.g. `/assets/images/posts/foo-thumb.jpg`), falling back to the original if no manifest entry or variant exists.
+- `cloudflare_resize` — emits `<site.images.cloudflare.resize_prefix>/width=<W>,quality=<Q>,format=auto/<original-url>` using `site.images.widths[<variant>]`.
+- `cloudflare_images` — emits `https://imagedelivery.net/<account_hash>/<cf_id>/<variant>` (falls back to `public` variant for `original`); requires `cf_id` in the manifest and `account_hash` in config, otherwise falls through to the local branch.
+
+Callers capture the output and pipe through `strip` to drop Liquid whitespace. Usage example in `_includes/photo_card.html`. Swapping backends is a config-only change; no templates need editing.
+
+### _includes/photo_card.html (~15 lines)
+Shared photocard renderer used by every album/gallery context. Inputs: `src`, `caption`, `index` (global photo index for the lightbox), `fallback_alt`. Delegates URL construction entirely to `image_src.html` — captures `thumb`, `med`, and `original` variants. Reads `site.data.image_meta[<key>]` for `width`/`height` attributes (prevents CLS) and gracefully degrades to bare `src` + original URL when the manifest has no entry. Emits `loading="lazy"`, `decoding="async"`, `fetchpriority="low"` on the grid `<img>`, and exposes `data-full-src` (med) + `data-original-src` for the lightbox. **Used by:** `_layouts/post.html`, `_layouts/album.html`, `gallery.md`.
 
 ---
 
@@ -277,15 +298,31 @@ Homepage and CV display fields (on position 2 — AI for Animal Behavior):
 Auto-updated by GitHub Actions every 30 min. Schema:
 ```json
 {
-  "track": {
-    "name": "...", "url": "spotify:track:...",
-    "artists": [{"name": "...", "url": "..."}],
-    "played_at": "ISO8601"
-  },
-  "fetched_at": "ISO8601",
-  "context": { "type": "playlist|album|artist", "name": "...", "url": "..." }
+ "track": {
+ "name": "...", "url": "spotify:track:...",
+ "artists": [{"name": "...", "url": "..."}],
+ "played_at": "ISO8601"
+ },
+ "fetched_at": "ISO8601",
+ "context": { "type": "playlist|album|artist", "name": "...", "url": "..." }
 }
 ```
+
+### _data/image_meta.yml
+Generated image manifest — do not hand-edit. Maps each source image under `assets/images/` to original dimensions and pre-generated `thumb` (600w) / `med` (1600w) JPEG variants. Consumed by `_includes/image_src.html` (URL resolution) and `_includes/photo_card.html` (`width` / `height` attributes for CLS-free layout).
+
+Schema:
+```yaml
+posts/20260423112441-Screenshot.png:
+  w: 3024
+  h: 1964
+  thumb: { src: posts/20260423112441-Screenshot-thumb.jpg, w: 600, h: 390 }
+  med:   { src: posts/20260423112441-Screenshot-med.jpg,   w: 1600, h: 1040 }
+  # cf_id: <opaque-id>   # optional; reserved for Cloudflare Images integration
+albums/...: ...
+```
+
+The optional `cf_id` field is preserved across regenerations and is used by `image_src.html` when `site.images.source == "cloudflare_images"`. Produced and updated by `scripts/generate_thumbnails.rb` (CLI backfill) and `scripts/local_editor_server.rb` (on every image upload / delete).
 
 ---
 
@@ -408,8 +445,8 @@ Key features:
 
 ## Scripts
 
-### scripts/local_editor_server.rb (861 lines)
-Sinatra REST API on `127.0.0.1:4001` for local blog editing. **Depends on:** sinatra, json, yaml, fileutils, time, base64 (all stdlib or development-group gems).
+### scripts/local_editor_server.rb (~985 lines)
+Sinatra REST API on `127.0.0.1:4001` for local blog editing. **Depends on:** sinatra, json, yaml, fileutils, time, base64 (all stdlib or development-group gems), and optionally `mini_magick` (for automatic thumbnail generation — degrades gracefully if unavailable).
 
 **Endpoints:**
 
@@ -442,13 +479,26 @@ Sinatra REST API on `127.0.0.1:4001` for local blog editing. **Depends on:** sin
 - `merge_images(body_images, album_images)` — deduplicates by src, album images take priority for captions
 - `promote_temp_images(body, images=[])` — moves images from `_editor_tmp/` to `assets/images/`, scans body + album `src` paths (supports posts/drafts/albums subdirs)
 - `find_image_references(src, exclude_path:)` — scans all posts + albums for references to an image src
-- `delete_image_if_orphaned(src, exclude_path:)` — deletes image file only if no other post/album references it
+- `delete_image_if_orphaned(src, exclude_path:)` — deletes image file only if no other post/album references it; also removes the matching `-thumb.jpg` / `-med.jpg` siblings and the `_data/image_meta.yml` entry
 - `extract_base64_images(body, kind, slug)` — decodes inline base64 data URLs, saves as files
 - `ext_for_mime(mime)` — MIME type to file extension mapping
+- `generate_thumbnails_for(abs_path)` — generates `-thumb.jpg` (600w, q78) + `-med.jpg` (1600w, q82) JPEG variants next to the source and updates the `_data/image_meta.yml` manifest atomically; no-op when `mini_magick` is not installed
+- `cleanup_draft_variants(filename)` — deletes draft-side thumb/med JPEGs + manifest entry when a draft image is promoted to a post
 
-**Image flow:** upload → `_editor_tmp/{posts|drafts|albums}/YYYYMMDDHHMMSS-filename.ext` → promoted to `assets/images/{posts|drafts|albums}/` on save. Draft↔post conversion rewrites paths in `images` frontmatter. Deleting a post/album also deletes orphaned image files.
+**Image flow:** upload → `_editor_tmp/{posts|drafts|albums}/YYYYMMDDHHMMSS-filename.ext` → promoted to `assets/images/{posts|drafts|albums}/` on save. `promote_temp_images` calls `generate_thumbnails_for` for every moved file, producing JPEG variants alongside the original and updating `_data/image_meta.yml`. Draft↔post conversion rewrites paths in `images` frontmatter and regenerates variants at the new location. Deleting a post/album also deletes orphaned image files, their thumb/med siblings, and the manifest entry.
 
 **CORS:** restricted to localhost origins only.
+
+### scripts/generate_thumbnails.rb (~165 lines)
+Standalone CLI that backfills responsive JPEG variants for every image under `assets/images/{posts,albums,drafts}/` and regenerates `_data/image_meta.yml`. **Depends on:** `mini_magick` and ImageMagick on PATH (aborts with a clear error otherwise).
+
+For each source image (skipping `-thumb.jpg` / `-med.jpg` siblings) it writes:
+- `<basename>-thumb.jpg` — max 600w, quality 78, stripped metadata
+- `<basename>-med.jpg`   — max 1600w, quality 82, stripped metadata
+
+PNGs are auto-oriented and flattened onto white before JPEG encoding. Images already smaller than a variant width are just resized to their own size (no upscaling). Idempotent — skips files whose variants already exist and are newer than the source (unless `--force`). Preserves any existing `cf_id` field in the manifest.
+
+Usage: `bundle exec ruby scripts/generate_thumbnails.rb [--force] [--only posts|albums|drafts] [--verbose]`. Safe to run repeatedly; primarily needed after externally added images or when adjusting variant sizes. Normal editor uploads generate variants automatically via `local_editor_server.rb`.
 
 ### scripts/migrate_images_to_figures.rb (114 lines)
 One-time migration script. Converts markdown image+caption patterns:
@@ -518,6 +568,24 @@ Automated Spotify "recently played" sync.
 **Standalone albums:** `_albums/` collection with `output: true`. Each `.md` file has frontmatter: `title`, `date`, `description` (max 500 chars), `draft`, `images: [{src, caption}]`. Layout: `album.html`. Images stored in `assets/images/albums/`.
 
 **Image deletion security:** removing an image from an album calls `POST /images/delete` → server checks all posts + albums for references → only deletes if orphaned. Deleting a post/album also cleans up orphaned images. Draft images in `assets/images/drafts/` are gitignored and won't be published.
+
+### Image Optimization
+
+All album / gallery images flow through a two-tier system designed for GitHub Pages (no custom build plugins allowed):
+
+1. **Generation** — `scripts/generate_thumbnails.rb` (CLI backfill) and `scripts/local_editor_server.rb` (on upload / delete) use `mini_magick` to emit two JPEG variants next to every source image under `assets/images/{posts,albums,drafts}/`:
+   - `<basename>-thumb.jpg` — 600w max, quality 78 — rendered in grid contexts
+   - `<basename>-med.jpg`   — 1600w max, quality 82 — rendered in the lightbox
+   Both variants plus their pixel dimensions are committed to `_data/image_meta.yml`, which also reserves a `cf_id` field for future Cloudflare Images integration. Originals stay untouched and remain linkable via `data-original-src`.
+
+2. **URL resolution** — `_includes/photo_card.html` builds the cards and delegates every URL construction to `_includes/image_src.html`, which returns a per-variant URL based on `site.images.source`:
+   - `local` (default) — uses the manifest to return `/assets/images/...-thumb.jpg` / `-med.jpg`, falling back to the original when no entry exists
+   - `cloudflare_resize` — emits `/cdn-cgi/image/width=<W>,quality=<Q>,format=auto/<original>` (requires the zone to have Image Resizing enabled)
+   - `cloudflare_images` — emits `https://imagedelivery.net/<account_hash>/<cf_id>/<variant>` (requires `cf_id` in the manifest and `account_hash` in `_config.yml`)
+
+3. **Client-side** — `assets/js/album-lightbox.js` uses the `-med` variant when opening, preloads both neighbors (next + previous) after every navigation, and sets `fetchPriority = 'high'` + `decoding = 'async'` on the lightbox `<img>`. Grid `<img>` elements get `loading="lazy"`, `decoding="async"`, `fetchpriority="low"`, plus intrinsic `width`/`height` from the manifest to prevent CLS.
+
+Switching delivery backends is purely a config flip — no template edits required. Flipping to `cloudflare_resize` skips the committed variants entirely; flipping to `cloudflare_images` relies on populated `cf_id` fields and gracefully falls back to local for any image that has not been uploaded yet.
 
 ---
 
