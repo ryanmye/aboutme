@@ -52,7 +52,7 @@ bundle exec jekyll build --config _config.yml,_config_prod.yml
 │   ├── head.html            # <head>: meta, OG tags, fonts, CSS
 │   ├── navbar.html          # Sticky nav, 5-theme dots, mobile hamburger menu
 │   ├── footer.html          # Copyright, social links, faith statement
-│   ├── image_src.html       # Pluggable image URL resolver (local | cloudflare_resize | cloudflare_images)
+│   ├── image_src.html       # Pluggable image URL resolver (local | cloudflare_r2)
 │   └── photo_card.html      # Shared album/gallery photocard (figure + lightbox trigger)
 │
 ├── _data/
@@ -92,6 +92,8 @@ bundle exec jekyll build --config _config.yml,_config_prod.yml
 ├── scripts/
 │   ├── local_editor_server.rb      # Sinatra REST API for editing (port 4001)
 │   ├── generate_thumbnails.rb       # Backfill CLI: emits -thumb.jpg/-med.jpg + image_meta.yml
+│   ├── sync_r2_images.rb     # Backfill R2 uploads + manifest r2_key sync
+│   ├── process_r2_deletes.rb # Process queued R2 deletes
 │   ├── migrate_images_to_figures.rb # Converts md images to <figure> blocks
 │   ├── extract_base64_images.rb     # Extracts inline base64 to files
 │   ├── backfill_titles.rb           # Auto-generates missing post titles
@@ -101,6 +103,7 @@ bundle exec jekyll build --config _config.yml,_config_prod.yml
 │   └── update-spotify.yml   # Cron job: fetch Spotify → commit now-playing.json
 │
 ├── _editor_tmp/             # Temp images during editing (not committed)
+├── _deleted/                # Local recycle-bin snapshots for deleted posts/albums
 ├── _site/                   # Built output (not committed)
 ├── 25Dec_Ye_Ryan_Resume.pdf # PDF resume
 ├── README.md                # Setup instructions
@@ -122,8 +125,8 @@ Main Jekyll configuration. Key settings:
 - `collections.albums`: `output: true`, `permalink: /albums/:title/` — standalone album Jekyll collection
 - `images:` block selects the image delivery backend used by `_includes/image_src.html`:
   - `source: local` (default) — serves pre-generated thumbnails from `assets/images/`
-  - `source: cloudflare_resize` — routes originals through `/cdn-cgi/image/<opts>/` (requires the site to sit behind a Cloudflare zone with Image Resizing enabled)
-  - `source: cloudflare_images` — uses `https://imagedelivery.net/<account_hash>/<cf_id>/<variant>` (requires `cf_id` in `_data/image_meta.yml` and `images.cloudflare.account_hash` set)
+  - `source: cloudflare_r2` — serves R2 object keys through `images.cloudflare.r2_public_base_url` (custom domain)
+  - `images.cloudflare.*` contains R2 tooling placeholders (`account_id`, `r2_bucket`, `r2_access_key_id`, `r2_secret_access_key`, `r2_s3_endpoint`, `r2_public_base_url`)
   - `images.widths: { thumb: 600, med: 1600 }` — pixel widths used by local generation and Cloudflare Image Resizing variant URLs
 - Defaults: `post` layout applied to all files in `_posts/`, `album` layout applied to all files in `_albums/`
 - Excludes: README.md, CLAUDE.md, Gemfile, Gemfile.lock, node_modules, vendor
@@ -190,8 +193,7 @@ Site footer with: dynamic copyright year, "Jesus is King" statement, social link
 ### _includes/image_src.html (~40 lines)
 Pluggable image URL resolver — the single choke point for every album/gallery image URL. Takes `src` (repo-relative path, e.g. `/assets/images/posts/foo.png`) and `variant` (`thumb` | `med` | `original`) and emits one URL string. Branches on `site.images.source`:
 - `local` — looks up `site.data.image_meta[<key>]` and returns the matching variant path (e.g. `/assets/images/posts/foo-thumb.jpg`), falling back to the original if no manifest entry or variant exists.
-- `cloudflare_resize` — emits `<site.images.cloudflare.resize_prefix>/width=<W>,quality=<Q>,format=auto/<original-url>` using `site.images.widths[<variant>]`.
-- `cloudflare_images` — emits `https://imagedelivery.net/<account_hash>/<cf_id>/<variant>` (falls back to `public` variant for `original`); requires `cf_id` in the manifest and `account_hash` in config, otherwise falls through to the local branch.
+- `cloudflare_r2` — emits `<r2_public_base_url>/<key>`, using variant keys from the manifest (`thumb.src` / `med.src`) and the original key for `original`.
 
 Callers capture the output and pipe through `strip` to drop Liquid whitespace. Usage example in `_includes/photo_card.html`. Swapping backends is a config-only change; no templates need editing.
 
@@ -318,11 +320,22 @@ posts/20260423112441-Screenshot.png:
   h: 1964
   thumb: { src: posts/20260423112441-Screenshot-thumb.jpg, w: 600, h: 390 }
   med:   { src: posts/20260423112441-Screenshot-med.jpg,   w: 1600, h: 1040 }
-  # cf_id: <opaque-id>   # optional; reserved for Cloudflare Images integration
+  # r2_key: posts/20260423112441-Screenshot.png # optional override for object key
 albums/...: ...
 ```
 
-The optional `cf_id` field is preserved across regenerations and is used by `image_src.html` when `site.images.source == "cloudflare_images"`. Produced and updated by `scripts/generate_thumbnails.rb` (CLI backfill) and `scripts/local_editor_server.rb` (on every image upload / delete).
+The optional `r2_key` field is preserved across regenerations. If absent, object key defaults to the manifest key itself (e.g. `posts/...`). Produced and updated by `scripts/generate_thumbnails.rb` (CLI backfill) and `scripts/local_editor_server.rb` (on image updates).
+
+### _data/r2_delete_queue.yml
+Queue for deferred R2 hard deletes. Schema:
+```yaml
+items:
+  - r2_key: "posts/..."
+    src: "/assets/images/posts/..."
+    reason: "unpublish|post_deleted|album_deleted|orphaned_image"
+    scheduled_delete_at: "ISO8601"
+```
+Written by `scripts/local_editor_server.rb` and consumed by `scripts/process_r2_deletes.rb`.
 
 ---
 
@@ -445,7 +458,7 @@ Key features:
 
 ## Scripts
 
-### scripts/local_editor_server.rb (~985 lines)
+### scripts/local_editor_server.rb (~1150 lines)
 Sinatra REST API on `127.0.0.1:4001` for local blog editing. **Depends on:** sinatra, json, yaml, fileutils, time, base64 (all stdlib or development-group gems), and optionally `mini_magick` (for automatic thumbnail generation — degrades gracefully if unavailable).
 
 **Endpoints:**
@@ -477,15 +490,17 @@ Sinatra REST API on `127.0.0.1:4001` for local blog editing. **Depends on:** sin
 - `images_to_frontmatter(images)` — serializes images array to YAML for frontmatter output
 - `extract_body_images(body)` — parses markdown body for `![alt](url)` + optional `*caption*` patterns, returns `[{src, caption}]`
 - `merge_images(body_images, album_images)` — deduplicates by src, album images take priority for captions
-- `promote_temp_images(body, images=[])` — moves images from `_editor_tmp/` to `assets/images/`, scans body + album `src` paths (supports posts/drafts/albums subdirs)
+- `promote_temp_images(body, images=[])` — moves images from `_editor_tmp/` to `assets/images/`, scans body + album `src` paths (supports posts/drafts/albums subdirs), and optionally uploads post/album images to R2
 - `find_image_references(src, exclude_path:)` — scans all posts + albums for references to an image src
-- `delete_image_if_orphaned(src, exclude_path:)` — deletes image file only if no other post/album references it; also removes the matching `-thumb.jpg` / `-med.jpg` siblings and the `_data/image_meta.yml` entry
+- `delete_image_if_orphaned(src, exclude_path:)` — deletes image file only if no other post/album references it; queues R2 delete (7-day grace), removes matching `-thumb.jpg` / `-med.jpg` siblings, and prunes `_data/image_meta.yml`
+- `sync_r2_for_images(images, allow_upload:)` — publish-only `r2_key` backfill for post/album images
+- `archive_deleted_content(path, bucket:)` — snapshots deleted posts/albums into `_deleted/posts/` or `_deleted/albums/` before destructive removal
 - `extract_base64_images(body, kind, slug)` — decodes inline base64 data URLs, saves as files
 - `ext_for_mime(mime)` — MIME type to file extension mapping
 - `generate_thumbnails_for(abs_path)` — generates `-thumb.jpg` (600w, q78) + `-med.jpg` (1600w, q82) JPEG variants next to the source and updates the `_data/image_meta.yml` manifest atomically; no-op when `mini_magick` is not installed
 - `cleanup_draft_variants(filename)` — deletes draft-side thumb/med JPEGs + manifest entry when a draft image is promoted to a post
 
-**Image flow:** upload → `_editor_tmp/{posts|drafts|albums}/YYYYMMDDHHMMSS-filename.ext` → promoted to `assets/images/{posts|drafts|albums}/` on save. `promote_temp_images` calls `generate_thumbnails_for` for every moved file, producing JPEG variants alongside the original and updating `_data/image_meta.yml`. Draft↔post conversion rewrites paths in `images` frontmatter and regenerates variants at the new location. Deleting a post/album also deletes orphaned image files, their thumb/med siblings, and the manifest entry.
+**Image flow:** upload → `_editor_tmp/{posts|drafts|albums}/YYYYMMDDHHMMSS-filename.ext` → promoted to `assets/images/{posts|drafts|albums}/` on save. `promote_temp_images` calls `generate_thumbnails_for` for every moved file, producing JPEG variants alongside the original and updating `_data/image_meta.yml`. Draft images stay local-only (never uploaded to R2). Publishing post/album content can upload to R2 and persist `r2_key` in the manifest. Post/album unpublish and orphan/delete events queue remote hard deletes in `_data/r2_delete_queue.yml` (7-day grace). Deleting a post/album first archives the markdown file in `_deleted/*/`.
 
 **CORS:** restricted to localhost origins only.
 
@@ -496,9 +511,34 @@ For each source image (skipping `-thumb.jpg` / `-med.jpg` siblings) it writes:
 - `<basename>-thumb.jpg` — max 600w, quality 78, stripped metadata
 - `<basename>-med.jpg`   — max 1600w, quality 82, stripped metadata
 
-PNGs are auto-oriented and flattened onto white before JPEG encoding. Images already smaller than a variant width are just resized to their own size (no upscaling). Idempotent — skips files whose variants already exist and are newer than the source (unless `--force`). Preserves any existing `cf_id` field in the manifest.
+PNGs are auto-oriented and flattened onto white before JPEG encoding. Images already smaller than a variant width are just resized to their own size (no upscaling). Idempotent — skips files whose variants already exist and are newer than the source (unless `--force`). Preserves any existing `r2_key` field in the manifest.
 
 Usage: `bundle exec ruby scripts/generate_thumbnails.rb [--force] [--only posts|albums|drafts] [--verbose]`. Safe to run repeatedly; primarily needed after externally added images or when adjusting variant sizes. Normal editor uploads generate variants automatically via `local_editor_server.rb`.
+
+### scripts/sync_r2_images.rb
+Manifest-driven R2 upload backfill for published images (`posts/` + `albums/`, drafts excluded). Reads `_data/image_meta.yml`, uploads rows missing/unsynced `r2_key`, writes keys back atomically, supports `--dry-run`, optional delivery URL verification (`--verify`), and `--force`.
+
+Required env vars:
+- `CLOUDFLARE_ACCOUNT_ID`
+- `CLOUDFLARE_R2_BUCKET`
+- `CLOUDFLARE_R2_ACCESS_KEY_ID`
+- `CLOUDFLARE_R2_SECRET_ACCESS_KEY`
+- `CLOUDFLARE_R2_S3_ENDPOINT` (optional if account id is set)
+- `CLOUDFLARE_R2_PUBLIC_BASE_URL` (for `--verify`)
+
+Usage: `bundle exec ruby scripts/sync_r2_images.rb [--dry-run] [--verify] [--force]`.
+
+### scripts/process_r2_deletes.rb
+Processes deferred R2 delete queue in `_data/r2_delete_queue.yml`. Deletes entries whose `scheduled_delete_at` has passed and keeps failed entries for retry.
+
+Required env vars:
+- `CLOUDFLARE_ACCOUNT_ID`
+- `CLOUDFLARE_R2_BUCKET`
+- `CLOUDFLARE_R2_ACCESS_KEY_ID`
+- `CLOUDFLARE_R2_SECRET_ACCESS_KEY`
+- `CLOUDFLARE_R2_S3_ENDPOINT` (optional if account id is set)
+
+Usage: `bundle exec ruby scripts/process_r2_deletes.rb`.
 
 ### scripts/migrate_images_to_figures.rb (114 lines)
 One-time migration script. Converts markdown image+caption patterns:
@@ -576,16 +616,15 @@ All album / gallery images flow through a two-tier system designed for GitHub Pa
 1. **Generation** — `scripts/generate_thumbnails.rb` (CLI backfill) and `scripts/local_editor_server.rb` (on upload / delete) use `mini_magick` to emit two JPEG variants next to every source image under `assets/images/{posts,albums,drafts}/`:
    - `<basename>-thumb.jpg` — 600w max, quality 78 — rendered in grid contexts
    - `<basename>-med.jpg`   — 1600w max, quality 82 — rendered in the lightbox
-   Both variants plus their pixel dimensions are committed to `_data/image_meta.yml`, which also reserves a `cf_id` field for future Cloudflare Images integration. Originals stay untouched and remain linkable via `data-original-src`.
+   Both variants plus their pixel dimensions are committed to `_data/image_meta.yml`, which also supports an optional `r2_key` field for Cloudflare R2 object mapping. Originals stay untouched and remain linkable via `data-original-src`.
 
 2. **URL resolution** — `_includes/photo_card.html` builds the cards and delegates every URL construction to `_includes/image_src.html`, which returns a per-variant URL based on `site.images.source`:
    - `local` (default) — uses the manifest to return `/assets/images/...-thumb.jpg` / `-med.jpg`, falling back to the original when no entry exists
-   - `cloudflare_resize` — emits `/cdn-cgi/image/width=<W>,quality=<Q>,format=auto/<original>` (requires the zone to have Image Resizing enabled)
-   - `cloudflare_images` — emits `https://imagedelivery.net/<account_hash>/<cf_id>/<variant>` (requires `cf_id` in the manifest and `account_hash` in `_config.yml`)
+   - `cloudflare_r2` — emits `<r2_public_base_url>/<key>` where key is variant path for `thumb`/`med` and source key for `original`
 
 3. **Client-side** — `assets/js/album-lightbox.js` uses the `-med` variant when opening, preloads both neighbors (next + previous) after every navigation, and sets `fetchPriority = 'high'` + `decoding = 'async'` on the lightbox `<img>`. Grid `<img>` elements get `loading="lazy"`, `decoding="async"`, `fetchpriority="low"`, plus intrinsic `width`/`height` from the manifest to prevent CLS.
 
-Switching delivery backends is purely a config flip — no template edits required. Flipping to `cloudflare_resize` skips the committed variants entirely; flipping to `cloudflare_images` relies on populated `cf_id` fields and gracefully falls back to local for any image that has not been uploaded yet.
+Switching delivery backends is purely a config flip — no template edits required. Flipping to `cloudflare_r2` uses uploaded object keys and gracefully falls back to local when disabled.
 
 ---
 

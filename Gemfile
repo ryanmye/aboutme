@@ -5,6 +5,7 @@ gem "webrick", "~> 1.7"
 gem "kramdown-parser-gfm"
 gem "jekyll-sitemap"
 gem "jekyll-feed"
+gem "aws-sdk-s3"
 # Pin ffi for Ruby 2.6 compatibility
 gem "ffi", "~> 1.15"
 

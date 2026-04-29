@@ -27,16 +27,22 @@ local_editor: true
 # Image delivery configuration. `source` selects which backend renders image URLs;
 # all template-level calls go through _includes/image_src.html.
 #   local              - default, serves pre-generated thumbnails from assets/images/
-#   cloudflare_resize  - rewrites URLs through a Cloudflare zone's /cdn-cgi/image/ prefix
-#   cloudflare_images  - uses https://imagedelivery.net/<hash>/<id>/<variant> (requires cf_id in _data/image_meta.yml)
+#   cloudflare_r2      - serves from R2 object keys through a custom public domain
+# R2 API sync scripts read credentials from env vars:
+#   CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_R2_BUCKET, CLOUDFLARE_R2_ACCESS_KEY_ID,
+#   CLOUDFLARE_R2_SECRET_ACCESS_KEY, CLOUDFLARE_R2_S3_ENDPOINT, CLOUDFLARE_R2_PUBLIC_BASE_URL
 images:
-  source: local
+  source: cloudflare_r2
   widths:
     thumb: 600
     med: 1600
   cloudflare:
-    account_hash: ""
-    resize_prefix: "/cdn-cgi/image"
+    r2_public_base_url: "https://pub-ed4049e46db94fcf82ddec7b6550f05f.r2.dev"
+    account_id: ""
+    r2_bucket: ""
+    r2_access_key_id: ""
+    r2_secret_access_key: ""
+    r2_s3_endpoint: ""
 
 collections:
   albums:

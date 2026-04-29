@@ -52,6 +52,65 @@ The site includes a local-only web editor for creating and editing blog posts:
 
 ---
 
+## Cloudflare R2 Workflow
+
+Cloudflare R2 delivery is optional and can be toggled with `images.source` in `_config.yml`.
+
+- `local` (default): serve local `-thumb.jpg` / `-med.jpg` variants committed to repo
+- `cloudflare_r2`: serve image object keys from your public R2 custom-domain base URL
+- Missing R2 objects can still fall back to local URLs by switching `images.source: local`
+
+### Object Key Strategy
+
+- Keep pre-generated variants in git (`thumb`, `med`) for predictable quality and cost.
+- Upload published `posts/` + `albums/` objects to R2.
+- Keep draft images local-only (never upload).
+
+### Credentials
+
+Set these environment variables for R2 sync scripts and editor publish hooks:
+
+```bash
+export CLOUDFLARE_ACCOUNT_ID="..."
+export CLOUDFLARE_R2_BUCKET="..."
+export CLOUDFLARE_R2_ACCESS_KEY_ID="..."
+export CLOUDFLARE_R2_SECRET_ACCESS_KEY="..."
+export CLOUDFLARE_R2_S3_ENDPOINT="https://<accountid>.r2.cloudflarestorage.com" # optional if account id is set
+export CLOUDFLARE_R2_PUBLIC_BASE_URL="https://images.example.com" # custom domain bound to bucket
+```
+
+### Backfill Uploads
+
+Upload missing published images to R2:
+
+```bash
+bundle exec ruby scripts/sync_r2_images.rb --dry-run
+bundle exec ruby scripts/sync_r2_images.rb --verify
+```
+
+### Deletion Queue (7-day grace)
+
+The editor server queues R2 deletes to `_data/r2_delete_queue.yml` when:
+- a published post/album is unpublished,
+- a post/album is deleted,
+- an image becomes orphaned.
+
+Process due deletions manually or in CI:
+
+```bash
+bundle exec ruby scripts/process_r2_deletes.rb
+```
+
+### Safety Archive for Deletes
+
+Before deleting content files, the server archives them under:
+- `_deleted/posts/`
+- `_deleted/albums/`
+
+This provides a local recycle-bin for accidental deletes.
+
+---
+
 ## GitHub Pages Deployment
 
 1. Push to GitHub and go to **Settings → Pages**
